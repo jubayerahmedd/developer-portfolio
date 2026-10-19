@@ -552,6 +552,7 @@ footer .mono { font-family: var(--font-mono); font-size: .8rem; }
         <li><a href="#process">Process</a></li>
         <li><a href="#leadership">Leadership</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="/feeds">Community</a></li>
       </ul>
     </nav>
 
@@ -1035,7 +1036,10 @@ const TERMINAL_LINES = [
   });
 
   /* ---------- Active section highlight in navbar ---------- */
-  const links = [...navLinks.querySelectorAll("a")];
+  // Only in-page anchors take part in scrollspy — "Community" links off-page
+  // to /feeds, and `document.querySelector("/feeds")` would throw (invalid
+  // CSS selector) and abort every script below this block.
+  const links = [...navLinks.querySelectorAll('a[href^="#"]')];
   const sections = links.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
   function updateActive() {
     const line = window.innerHeight * 0.35;
