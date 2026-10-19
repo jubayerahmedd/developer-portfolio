@@ -1,32 +1,26 @@
 /*
  * One plain stylesheet, no UI library and no build step beyond Vite's.
- * Colours are tokens on :root; the dark set is the same tokens redefined under
- * prefers-color-scheme so every surface flips together.
+ * Colours are tokens on :root, matched to the dark navy/teal palette of the
+ * portfolio home page (public/portfolio.html) so the blog reads as the same
+ * site rather than a different template. The portfolio defaults to dark with
+ * no system-preference check (its own toggle is manual, localStorage-backed),
+ * so these pages stay on the same single dark theme rather than branching on
+ * prefers-color-scheme.
  */
 
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 
-  --bg: #ffffff;
-  --surface: #f6f7f9;
-  --ink: #16181d;
-  --muted: #5c6470;
-  --line: #e4e7ec;
-  --accent: #635bff;
-  --accent-ink: #ffffff;
-  --radius: 12px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f1115;
-    --surface: #171a21;
-    --ink: #eceef2;
-    --muted: #9aa3b2;
-    --line: #262b35;
-    --accent: #8b85ff;
-    --accent-ink: #10121a;
-  }
+  --bg: #0a1224;
+  --surface: rgba(255, 255, 255, 0.045);
+  --ink: #e8eef9;
+  --muted: #9fb0cc;
+  --line: rgba(148, 178, 230, 0.14);
+  --accent: #22d3c5;
+  --accent-ink: #04201e;
+  --radius: 18px;
+  --radius-sm: 10px;
+  --shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.55);
 }
 
 * {
@@ -43,6 +37,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family:
+    'Inter',
     system-ui,
     -apple-system,
     'Segoe UI',
@@ -150,8 +145,13 @@ hr {
 /* ---------- header / footer ---------- */
 
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .site-header-inner,
@@ -196,11 +196,21 @@ hr {
 .site-nav a {
   text-decoration: none;
   color: var(--muted);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 }
 
-.site-nav a:hover,
-.site-nav a.active {
+.site-nav a:hover {
   color: var(--ink);
+  background: var(--surface);
+}
+
+.site-nav a.active {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
 .site-footer {
@@ -226,18 +236,29 @@ hr {
 .button {
   display: inline-block;
   padding: 10px 18px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background: var(--accent);
   color: var(--accent-ink);
   text-decoration: none;
   font-weight: 600;
   border: 1px solid transparent;
+  box-shadow: 0 8px 24px -10px var(--accent);
+  transition: box-shadow 0.2s;
+}
+
+.button:hover {
+  box-shadow: 0 12px 30px -10px var(--accent);
 }
 
 .button.ghost {
-  background: transparent;
+  background: var(--surface);
   color: var(--ink);
   border-color: var(--line);
+  box-shadow: none;
+}
+
+.button.ghost:hover {
+  border-color: var(--accent);
 }
 
 .button.link {
@@ -298,11 +319,17 @@ hr {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
-  background: var(--bg);
+  background: var(--surface);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .post-card:hover {
   border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
 }
 
 .cover {
@@ -357,8 +384,8 @@ hr {
   content: '';
   position: absolute;
   inset: 0;
-  background: #000;
-  opacity: 0.65;
+  background: var(--bg);
+  opacity: 0.7;
 }
 
 .post-hero-inner {
