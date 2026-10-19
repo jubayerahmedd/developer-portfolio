@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QA Test Report Dashboard</title>
+<meta name="description" content="Live-style dashboard summarising a QA test run: pass/fail counts, a filterable test list and a simple results chart." />
+
+<style>
+  /* ============================================================
+     1. THEME TOKENS — blue & white, with a dark mode variant
+     ============================================================ */
+  :root {
+    --blue: #2563eb;
+    --blue-dark: #1d4ed8;
+    --bg: #f4f7fd;
+    --panel: #ffffff;
+    --border: #e1e7f5;
+    --text: #0f172a;
+    --muted: #5b6b8c;
+    --pass: #16a34a;
+    --fail: #dc2626;
+    --skip: #d97706;
+    --pass-bg: #e9f9ef;
+    --fail-bg: #fdecec;
+    --skip-bg: #fdf3e3;
+    --radius: 14px;
+    --shadow: 0 6px 18px -8px rgba(15, 23, 42, 0.12);
+  }
+  [data-theme="dark"] {
+    --bg: #0b1222;
+    --panel: #121b30;
+    --border: #243355;
+    --text: #e7ecf7;
+    --muted: #93a3c4;
+    --pass-bg: rgba(22, 163, 74, 0.16);
+    --fail-bg: rgba(220, 38, 38, 0.16);
+    --skip-bg: rgba(217, 119, 6, 0.18);
+    --shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.5);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background-color .2s, color .2s;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px 60px; }
+
+  /* ---------- Header ---------- */
+  header.top {
+    background: linear-gradient(120deg, var(--blue), var(--blue-dark));
+    color: #fff;
+    padding: 22px 0;
+    margin-bottom: 28px;
+  }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  header.top h1 { margin: 0; font-size: 1.4rem; }
+  header.top p { margin: 2px 0 0; font-size: .85rem; opacity: .85; }
+  #themeBtn {
+    background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.35);
+    padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: .85rem;
+  }
+  #themeBtn:hover { background: rgba(255,255,255,.25); }
+
+  /* ---------- Panels / cards ---------- */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+  }
+  h2.section-title { font-size: 1rem; margin: 0 0 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+
+  /* ---------- Summary cards ---------- */
+  .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 700px) { .summary { grid-template-columns: 1fr 1fr; } }
+  .stat { text-align: center; }
+  .stat .num { font-size: 2rem; font-weight: 700; }
+  .stat .lbl { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+  .stat.pass .num { color: var(--pass); }
+  .stat.fail .num { color: var(--fail); }
+  .stat.skip .num { color: var(--skip); }
+
+  /* ---------- Chart + legend ---------- */
+  .chart-row { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center; margin-bottom: 24px; }
+  @media (max-width: 700px) { .chart-row { grid-template-columns: 1fr; justify-items: center; } }
+  #donut { display: block; }
+  .legend { display: grid; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; font-size: .9rem; }
+  .swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ---------- Controls ---------- */
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+  .controls input[type="text"], .controls select {
+    font: inherit; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--panel); color: var(--text);
+  }
+  .controls input[type="text"] { flex: 1; min-width: 160px; }
+  .btn {
+    font: inherit; padding: 9px 16px; border-radius: 8px; border: none; cursor: pointer;
+    background: var(--blue); color: #fff; font-weight: 600;
+  }
+  .btn:hover { background: var(--blue-dark); }
+  .btn.secondary { background: transparent; color: var(--fail); border: 1px solid var(--fail); }
+  .btn.secondary:hover { background: var(--fail-bg); }
+
+  /* ---------- Test table ---------- */
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  thead th { text-align: left; padding: 10px 8px; color: var(--muted); font-size: .78rem; text-transform: uppercase; border-bottom: 2px solid var(--border); }
+  tbody td { padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tbody tr:hover { background: color-mix(in srgb, var(--blue) 5%, transparent); }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700; }
+  .badge.pass { background: var(--pass-bg); color: var(--pass); }
+  .badge.fail { background: var(--fail-bg); color: var(--fail); }
+  .badge.skip { background: var(--skip-bg); color: var(--skip); }
+  .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 4px; }
+  .del-btn:hover { color: var(--fail); }
+  .empty-row td { text-align: center; color: var(--muted); padding: 30px 8px; }
+
+  /* ---------- Add-test form ---------- */
+  .add-form { display: grid; grid-template-columns: 2fr 1fr 1.2fr auto; gap: 10px; margin-top: 18px; }
+  @media (max-width: 700px) { .add-form { grid-template-columns: 1fr; } }
+  .add-form input, .add-form select { font: inherit; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); color: var(--text); }
+
+  footer { text-align: center; color: var(--muted); font-size: .82rem; margin-top: 30px; }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <h1>QA Test Report Dashboard</h1>
+      <p>Latest run summary — edit the sample data in the script to match your own suite.</p>
+    </div>
+    <button id="themeBtn" type="button">🌙 Dark mode</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- Summary stat cards (numbers computed from the data by JS) -->
+  <section class="summary" aria-label="Run summary">
+    <div class="panel stat"><div class="num" id="totalCount">0</div><div class="lbl">Total tests</div></div>
+    <div class="panel stat pass"><div class="num" id="passCount">0</div><div class="lbl">Passed</div></div>
+    <div class="panel stat fail"><div class="num" id="failCount">0</div><div class="lbl">Failed</div></div>
+    <div class="panel stat skip"><div class="num" id="skipCount">0</div><div class="lbl">Skipped</div></div>
+  </section>
+
+  <!-- Donut chart + legend (drawn with inline SVG, no chart library) -->
+  <section class="panel chart-row" aria-label="Results chart">
+    <svg id="donut" width="200" height="200" viewBox="0 0 200 200" role="img" aria-label="Donut chart of pass, fail and skip counts"></svg>
+    <div>
+      <h2 class="section-title">Result breakdown</h2>
+      <div class="legend">
+        <div class="legend-item"><span class="swatch" style="background:var(--pass)"></span><span id="legendPass">Passed — 0 (0%)</span></div>
+        <div class="legend-item"><span class="swatch" style="background:var(--fail)"></span><span id="legendFail">Failed — 0 (0%)</span></div>
+        <div class="legend-item"><span class="swatch" style="background:var(--skip)"></span><span id="legendSkip">Skipped — 0 (0%)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter / search controls + test list -->
+  <section class="panel" aria-label="Test list">
+    <h2 class="section-title">Test cases</h2>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search by test name…" aria-label="Search tests" />
+      <select id="statusFilter" aria-label="Filter by status">
+        <option value="all">All statuses</option>
+        <option value="pass">Passed</option>
+        <option value="fail">Failed</option>
+        <option value="skip">Skipped</option>
+      </select>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Test name</th><th>Suite</th><th>Status</th><th>Duration</th><th></th></tr>
+      </thead>
+      <tbody id="tableBody"><!-- rows rendered by JS --></tbody>
+    </table>
+
+    <!-- Add a new test result row. Data lives only in memory (page reload clears it). -->
+    <form class="add-form" id="addForm">
+      <input type="text" id="newName" placeholder="Test name" required />
+      <input type="text" id="newSuite" placeholder="Suite (e.g. Login)" required />
+      <select id="newStatus">
+        <option value="pass">Passed</option>
+        <option value="fail">Failed</option>
+        <option value="skip">Skipped</option>
+      </select>
+      <button class="btn" type="submit">Add result</button>
+    </form>
+  </section>
+
+  <footer>Sample dashboard — data resets on reload (no storage is used).</footer>
+</div>
+
+<script>
+/* ============================================================
+   DATA — replace with your own test results
+   status must be "pass", "fail" or "skip"
+   ============================================================ */
+let tests = [
+  { name: "User can log in with valid credentials", suite: "Auth", status: "pass", duration: "1.2s" },
+  { name: "User sees error on wrong password", suite: "Auth", status: "pass", duration: "0.9s" },
+  { name: "Password reset email is sent", suite: "Auth", status: "fail", duration: "2.1s" },
+  { name: "Add item to cart", suite: "Cart", status: "pass", duration: "1.0s" },
+  { name: "Remove item from cart", suite: "Cart", status: "pass", duration: "0.8s" },
+  { name: "Cart total updates on quantity change", suite: "Cart", status: "fail", duration: "1.4s" },
+  { name: "Checkout with saved card", suite: "Checkout", status: "pass", duration: "3.1s" },
+  { name: "Checkout with expired card shows error", suite: "Checkout", status: "skip", duration: "—" },
+  { name: "GET /orders returns 200", suite: "API", status: "pass", duration: "0.3s" },
+  { name: "POST /orders validates payload", suite: "API", status: "pass", duration: "0.4s" },
+  { name: "DELETE /orders/:id requires auth", suite: "API", status: "skip", duration: "—" },
+];
+
+/* ============================================================
+   RENDER — recomputes summary, chart and table from `tests`
+   ============================================================ */
+const tableBody = document.getElementById("tableBody");
+const search = document.getElementById("search");
+const statusFilter = document.getElementById("statusFilter");
+
+function counts() {
+  const c = { pass: 0, fail: 0, skip: 0 };
+  tests.forEach(t => c[t.status]++);
+  return c;
+}
+
+function render() {
+  // --- summary cards ---
+  const c = counts();
+  const total = tests.length;
+  document.getElementById("totalCount").textContent = total;
+  document.getElementById("passCount").textContent = c.pass;
+  document.getElementById("failCount").textContent = c.fail;
+  document.getElementById("skipCount").textContent = c.skip;
+
+  // --- donut chart (pure SVG, drawn by hand with stroke-dasharray) ---
+  const svg = document.getElementById("donut");
+  svg.innerHTML = "";
+  const r = 70, cx = 100, cy = 100, circumference = 2 * Math.PI * r;
+  const segs = [
+    { key: "pass", color: "var(--pass)", value: c.pass },
+    { key: "fail", color: "var(--fail)", value: c.fail },
+    { key: "skip", color: "var(--skip)", value: c.skip },
+  ];
+  let offset = 0;
+  // background ring so an empty state still shows a circle
+  svg.appendChild(ringCircle(cx, cy, r, "var(--border)", circumference, 0));
+  if (total > 0) {
+    segs.forEach(s => {
+      if (s.value === 0) return;
+      const len = (s.value / total) * circumference;
+      svg.appendChild(ringCircle(cx, cy, r, s.color, len, circumference - len, -offset));
+      offset += len;
+    });
+  }
+  const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  label.setAttribute("x", cx); label.setAttribute("y", cy + 6);
+  label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "22");
+  label.setAttribute("font-weight", "700"); label.setAttribute("fill", "currentColor");
+  label.textContent = total ? Math.round((c.pass / total) * 100) + "%" : "0%";
+  svg.appendChild(label);
+
+  // --- legend text ---
+  const pct = n => total ? Math.round((n / total) * 100) : 0;
+  document.getElementById("legendPass").textContent = `Passed — ${c.pass} (${pct(c.pass)}%)`;
+  document.getElementById("legendFail").textContent = `Failed — ${c.fail} (${pct(c.fail)}%)`;
+  document.getElementById("legendSkip").textContent = `Skipped — ${c.skip} (${pct(c.skip)}%)`;
+
+  // --- table rows, filtered by search + status dropdown ---
+  const q = search.value.trim().toLowerCase();
+  const filterVal = statusFilter.value;
+  const rows = tests
+    .map((t, i) => ({ ...t, i }))
+    .filter(t => (filterVal === "all" || t.status === filterVal) && t.name.toLowerCase().includes(q));
+
+  tableBody.innerHTML = "";
+  if (rows.length === 0) {
+    tableBody.innerHTML = `<tr class="empty-row"><td colspan="5">No tests match your filters.</td></tr>`;
+    return;
+  }
+  rows.forEach(t => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(t.name)}</td>
+      <td>${escapeHtml(t.suite)}</td>
+      <td><span class="badge ${t.status}">${t.status.toUpperCase()}</span></td>
+      <td>${escapeHtml(t.duration)}</td>
+      <td><button class="del-btn" aria-label="Delete ${escapeHtml(t.name)}" data-i="${t.i}">✕</button></td>
+    `;
+    tableBody.appendChild(tr);
+  });
+}
+
+// Build one arc of the donut as a circle with a dash pattern (SVG trick: no path math needed)
+function ringCircle(cx, cy, r, color, dash, gap, rotateOffset) {
+  const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  c.setAttribute("cx", cx); c.setAttribute("cy", cy); c.setAttribute("r", r);
+  c.setAttribute("fill", "none");
+  c.setAttribute("stroke", color);
+  c.setAttribute("stroke-width", "22");
+  c.setAttribute("stroke-dasharray", `${dash} ${gap}`);
+  c.setAttribute("stroke-dashoffset", rotateOffset || 0);
+  c.setAttribute("transform", `rotate(-90 ${cx} ${cy})`);
+  return c;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+search.addEventListener("input", render);
+statusFilter.addEventListener("change", render);
+
+tableBody.addEventListener("click", e => {
+  const btn = e.target.closest(".del-btn");
+  if (!btn) return;
+  tests.splice(Number(btn.dataset.i), 1);
+  render();
+});
+
+document.getElementById("addForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = document.getElementById("newName").value.trim();
+  const suite = document.getElementById("newSuite").value.trim();
+  const status = document.getElementById("newStatus").value;
+  if (!name || !suite) return;
+  tests.push({ name, suite, status, duration: "—" });
+  e.target.reset();
+  render();
+});
+
+// Dark mode toggle — state kept only in memory (no localStorage, per the rules)
+const themeBtn = document.getElementById("themeBtn");
+themeBtn.addEventListener("click", () => {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+  themeBtn.textContent = dark ? "🌙 Dark mode" : "☀️ Light mode";
+  render(); // re-draw chart so "currentColor" / CSS vars pick up the new theme
+});
+
+render();
+</script>
+</body>
+</html>
