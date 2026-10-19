@@ -58,14 +58,17 @@ function RootComponent() {
       <body>
         <header className="site-header">
           <div className="wrap site-header-inner">
-            <Link to="/" className="brand">
+            {/*
+              Plain <a>, NOT <Link>: `/` is a raw server-route response (the
+              portfolio page), not a route this app's component tree renders —
+              a client-side navigation here would show nothing.
+            */}
+            <a href="/" className="brand">
               <BrandMark site={site} />
               <span className="brand-name">{name}</span>
-            </Link>
+            </a>
             <nav className="site-nav">
-              <Link to="/" activeOptions={{exact: true}}>
-                Home
-              </Link>
+              <a href="/">Home</a>
               <Link to="/blog">Blog</Link>
               {/*
                 Plain <a>, NOT <Link>: `/feeds` is served by the platform App on

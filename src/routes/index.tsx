@@ -1,65 +1,25 @@
-import {createFileRoute, Link} from '@tanstack/react-router';
+import {createFileRoute} from '@tanstack/react-router';
 
-import {BrandMark} from '../components/brand';
-import {PostCard} from '../components/post-card';
-import {listPosts} from '../lib/api';
-import {useSite} from './__root';
+import portfolioHtml from '../../public/portfolio.html?raw';
 
+/**
+ * `/` is the portfolio page, served byte-for-byte. It's a complete,
+ * self-contained document (own <html>, styles, script) with nothing in common
+ * with the community chrome in `__root`, so a GET handler answers the raw
+ * request directly instead of going through the route component tree — the
+ * same content already reachable as a static asset at `/portfolio.html`.
+ *
+ * Any in-app link to `/` must stay a plain `<a href="/">`, never a `<Link>`:
+ * the client router never issues this request, so a SPA navigation would
+ * render nothing instead of this response.
+ */
 export const Route = createFileRoute('/')({
-  loader: async () => await listPosts({data: {limit: 3}}),
-  component: Home,
+  server: {
+    handlers: {
+      GET: () =>
+        new Response(portfolioHtml, {
+          headers: {'Content-Type': 'text/html; charset=utf-8'},
+        }),
+    },
+  },
 });
-
-/** CTAs into the platform App: always plain <a>, never <Link> — see __root. */
-function AppLinks() {
-  return (
-    <div className="actions">
-      <a className="button" href="/join">
-        Join
-      </a>
-      <a className="button ghost" href="/login">
-        Log in
-      </a>
-      <a className="button link" href="/feeds">
-        Open community →
-      </a>
-    </div>
-  );
-}
-
-function Home() {
-  const {posts} = Route.useLoaderData();
-  const site = useSite();
-  const name = site?.name ?? 'Community';
-
-  return (
-    <main>
-      <section className="hero">
-        <div className="wrap center">
-          <BrandMark site={site} size={72} />
-          <h1>{name}</h1>
-          {/*
-            `initial-data` carries no description, so there is no tagline to
-            read — this line IS the tagline until the platform exposes one.
-          */}
-          <p className="lede">Welcome to {name}</p>
-          <AppLinks />
-        </div>
-      </section>
-
-      {posts.length > 0 && (
-        <section className="wrap section">
-          <div className="section-head">
-            <h2>Latest from the blog</h2>
-            <Link to="/blog">All posts →</Link>
-          </div>
-          <div className="grid grid-3">
-            {posts.slice(0, 3).map(post => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
-        </section>
-      )}
-    </main>
-  );
-}

@@ -1,5 +1,3 @@
-import {Link} from '@tanstack/react-router';
-
 import type {Site} from '../lib/api';
 import {BrandMark} from './brand';
 
@@ -21,9 +19,10 @@ export function NotFound({site}: {site: Site | null}) {
         The page you were looking for isn’t part of {site?.name ?? 'this site'}.
       </p>
       <p>
-        <Link className="button" to="/">
+        {/* Plain <a>: `/` is a raw server-route response, not a client route. */}
+        <a className="button" href="/">
           Back to home
-        </Link>
+        </a>
       </p>
     </main>
   );
