@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jubayer Ahmed — SQA Engineer</title>
+<meta name="description" content="Jubayer Ahmed — SQA Engineer specialising in manual testing, Playwright/TypeScript and Appium automation, and API testing." />
+<meta name="theme-color" content="#0a1224" />
+<!-- Favicon: a tiny inline SVG bug, so there are no external image files -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a1224'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%2322d3c5' font-family='monospace' font-weight='700'%3EJA%3C/text%3E%3C/svg%3E" />
+<!-- Fonts: Inter (text) + JetBrains Mono (code labels). The page falls back to system fonts if these don't load. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<style>
+/* =====================================================================
+   1. DESIGN TOKENS — change colours here. Dark is the default theme.
+   ===================================================================== */
+:root {
+  --bg: #0a1224;            /* deep navy */
+  --bg-2: #0e1830;
+  --surface: rgba(255, 255, 255, 0.045);   /* glass card fill */
+  --surface-strong: rgba(255, 255, 255, 0.075);
+  --border: rgba(148, 178, 230, 0.14);
+  --text: #e8eef9;          /* soft white */
+  --text-muted: #9fb0cc;
+  --accent: #22d3c5;        /* bright teal */
+  --accent-2: #3b82f6;      /* electric blue, used sparingly in gradients */
+  --accent-ink: #04201e;    /* text on accent buttons */
+  --pass: #34d399;          /* "Passed" green */
+  --fail: #f87171;
+  --shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.55);
+  --grid-line: rgba(120, 160, 230, 0.07);
+  --radius: 18px;
+  --radius-sm: 10px;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --nav-h: 68px;
+  --maxw: 1140px;
+  color-scheme: dark;
+}
+/* Light theme (toggled with the sun/moon button) */
+:root[data-theme="light"] {
+  --bg: #f4f7fc;
+  --bg-2: #e9eff8;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-strong: rgba(255, 255, 255, 0.92);
+  --border: rgba(15, 35, 75, 0.12);
+  --text: #0d1a33;
+  --text-muted: #4a5a78;
+  --accent: #0d9488;        /* darker teal for contrast on light */
+  --accent-2: #2563eb;
+  --accent-ink: #ffffff;
+  --pass: #059669;
+  --fail: #dc2626;
+  --shadow: 0 10px 30px -14px rgba(15, 35, 75, 0.25);
+  --grid-line: rgba(15, 35, 75, 0.06);
+  color-scheme: light;
+}
+
+/* =====================================================================
+   2. BASE
+   ===================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 12px); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  transition: background-color .3s ease, color .3s ease;
+  overflow-x: hidden;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+h1, h2, h3, h4 { line-height: 1.2; margin: 0 0 .5em; letter-spacing: -0.02em; }
+p { margin: 0 0 1em; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+/* Visible keyboard focus everywhere */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+.skip-link {
+  position: absolute; left: 16px; top: -60px; z-index: 200;
+  background: var(--accent); color: var(--accent-ink); padding: 10px 16px; border-radius: 8px; font-weight: 600;
+}
+.skip-link:focus { top: 12px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.container { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }
+section { padding: 96px 0; position: relative; }
+@media (max-width: 640px) { section { padding: 72px 0; } .container { padding: 0 16px; } }
+
+/* Section heading with a small mono label above it */
+.eyebrow {
+  font-family: var(--font-mono); font-size: .8rem; color: var(--accent);
+  letter-spacing: .04em; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.eyebrow::before { content: "//"; opacity: .6; }
+.section-title { font-size: clamp(1.8rem, 3.6vw, 2.5rem); font-weight: 800; }
+.section-lead { color: var(--text-muted); max-width: 640px; margin-bottom: 44px; }
+
+/* Glass card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.card.hoverable:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 13px 22px; border-radius: 12px; font-weight: 600; font-size: .98rem;
+  border: 1px solid transparent; cursor: pointer; font-family: inherit;
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-2px); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 8px 24px -10px var(--accent); }
+.btn-primary:hover { box-shadow: 0 12px 30px -10px var(--accent); }
+.btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--accent); }
+.btn svg { width: 18px; height: 18px; }
+
+/* Mono "chips" used for tools/tags */
+.chip {
+  display: inline-block; font-family: var(--font-mono); font-size: .75rem;
+  padding: 4px 10px; border-radius: 999px; color: var(--text);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Green "Passed" badge */
+.badge-pass {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: .72rem; font-weight: 700; letter-spacing: .03em;
+  color: var(--pass); padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--pass) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pass) 35%, transparent);
+}
+.badge-pass::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--pass); box-shadow: 0 0 8px var(--pass); }
+
+/* Scroll-reveal animation (JS adds .in when visible) */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* =====================================================================
+   3. NAVBAR (sticky, active link highlight)
+   ===================================================================== */
+.nav {
+  position: fixed; inset: 0 0 auto 0; height: var(--nav-h); z-index: 100;
+  display: flex; align-items: center;
+  transition: background-color .3s ease, border-color .3s ease;
+  border-bottom: 1px solid transparent;
+}
+.nav.scrolled {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom-color: var(--border);
+}
+.nav .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.logo { font-family: var(--font-mono); font-weight: 700; color: var(--text); font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+.logo:hover { text-decoration: none; }
+.logo .dot { color: var(--accent); }
+.nav-links { display: flex; gap: 4px; align-items: center; }
+.nav-links a {
+  color: var(--text-muted); font-size: .9rem; font-weight: 500; padding: 8px 12px; border-radius: 8px;
+  transition: color .2s, background-color .2s;
+}
+.nav-links a:hover { color: var(--text); text-decoration: none; background: var(--surface); }
+.nav-links a.active { color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text); cursor: pointer;
+  transition: border-color .2s, transform .2s;
+}
+.icon-btn:hover { border-color: var(--accent); }
+.icon-btn svg { width: 19px; height: 19px; }
+.theme-toggle .sun { display: none; }
+:root[data-theme="light"] .theme-toggle .sun { display: block; }
+:root[data-theme="light"] .theme-toggle .moon { display: none; }
+.menu-btn { display: none; }
+
+@media (max-width: 960px) {
+  .menu-btn { display: grid; }
+  .nav-links {
+    position: fixed; top: var(--nav-h); left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 2px; padding: 12px 16px 20px;
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-8px); opacity: 0; visibility: hidden;
+    transition: opacity .25s, transform .25s, visibility .25s;
+  }
+  .nav-links.open { transform: none; opacity: 1; visibility: visible; }
+  .nav-links a { padding: 12px 14px; font-size: 1rem; }
+}
+
+/* =====================================================================
+   4. HERO (animated grid + floating code tokens + terminal)
+   ===================================================================== */
+.hero { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: calc(var(--nav-h) + 40px) 0 80px; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.hero-bg .grid {
+  position: absolute; inset: -64px;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 75%);
+  animation: gridMove 18s linear infinite;
+}
+@keyframes gridMove { to { transform: translate(48px, 48px); } }
+.hero-bg .glow {
+  position: absolute; width: 560px; height: 560px; border-radius: 50%; filter: blur(90px); opacity: .28;
+  background: radial-gradient(circle, var(--accent), transparent 65%);
+  top: -160px; right: -120px; animation: float 14s ease-in-out infinite alternate;
+}
+.hero-bg .glow.b { background: radial-gradient(circle, var(--accent-2), transparent 65%); top: auto; bottom: -220px; left: -160px; right: auto; opacity: .2; animation-duration: 18s; }
+@keyframes float { to { transform: translate(-40px, 40px) scale(1.08); } }
+/* Floating code tokens (positions set in HTML) */
+.token {
+  position: absolute; font-family: var(--font-mono); font-size: .78rem; color: var(--accent);
+  opacity: .16; white-space: nowrap; animation: drift 12s ease-in-out infinite alternate;
+}
+@keyframes drift { to { transform: translateY(-22px); } }
+
+.hero .container { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
+.status-pill {
+  display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: .8rem;
+  padding: 6px 14px 6px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-muted); margin-bottom: 22px;
+}
+.status-pill .live { width: 8px; height: 8px; border-radius: 50%; background: var(--pass); box-shadow: 0 0 0 0 var(--pass); animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--pass) 60%, transparent); } 100% { box-shadow: 0 0 0 10px transparent; } }
+.hero h1 { font-size: clamp(2.6rem, 6.4vw, 4.4rem); font-weight: 800; letter-spacing: -0.035em; margin-bottom: 12px; }
+.hero h1 .grad {
+  background: linear-gradient(100deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero .role { font-family: var(--font-mono); color: var(--accent); font-size: clamp(.95rem, 1.8vw, 1.1rem); margin-bottom: 18px; }
+.hero .value { font-size: clamp(1.05rem, 2vw, 1.25rem); color: var(--text-muted); max-width: 540px; margin-bottom: 32px; }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 14px; }
+
+/* Terminal window */
+.terminal { overflow: hidden; font-family: var(--font-mono); font-size: .85rem; }
+.terminal-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface-strong); }
+.terminal-bar span { width: 11px; height: 11px; border-radius: 50%; background: #f87171; }
+.terminal-bar span:nth-child(2) { background: #fbbf24; }
+.terminal-bar span:nth-child(3) { background: #34d399; }
+.terminal-bar em { margin-left: 8px; font-style: normal; color: var(--text-muted); font-size: .75rem; }
+.terminal-body { padding: 18px 18px 22px; min-height: 270px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; }
+.terminal-body .prompt { color: var(--accent); }
+.terminal-body .ok { color: var(--pass); }
+.terminal-body .dim { color: var(--text-muted); }
+.cursor { display: inline-block; width: 8px; height: 1.05em; background: var(--accent); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (max-width: 960px) {
+  .hero .container { grid-template-columns: 1fr; gap: 40px; }
+  .terminal-body { min-height: 230px; }
+}
+
+/* =====================================================================
+   5. ABOUT
+   ===================================================================== */
+.about-grid { display: grid; grid-template-columns: 320px 1fr; gap: 48px; align-items: center; }
+.photo {
+  aspect-ratio: 4 / 5; border-radius: 24px; position: relative; overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--bg-2), color-mix(in srgb, var(--accent-2) 25%, var(--bg)));
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  display: grid; place-items: center;
+}
+.photo .initials { font-size: 5rem; font-weight: 800; letter-spacing: -0.04em; color: var(--text); opacity: .9; }
+.photo .tag {
+  position: absolute; left: 14px; bottom: 14px; right: 14px; padding: 10px 12px; border-radius: 12px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(8px);
+  border: 1px solid var(--border); font-family: var(--font-mono); font-size: .75rem; color: var(--text-muted);
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+}
+.about-text p { color: var(--text-muted); font-size: 1.05rem; }
+.about-text p strong { color: var(--text); font-weight: 600; }
+.quick-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 26px; }
+.quick-facts .card { padding: 14px 16px; }
+.quick-facts dt { font-family: var(--font-mono); font-size: .72rem; color: var(--accent); margin-bottom: 2px; }
+.quick-facts dd { margin: 0; font-weight: 600; font-size: .95rem; }
+@media (max-width: 860px) {
+  .about-grid { grid-template-columns: 1fr; gap: 32px; }
+  .photo { max-width: 280px; margin: 0 auto; width: 100%; }
+}
+@media (max-width: 520px) { .quick-facts { grid-template-columns: 1fr; } }
+
+/* =====================================================================
+   6. WORK SUMMARY (timeline)
+   ===================================================================== */
+.timeline { position: relative; padding-left: 36px; }
+.timeline::before {
+  content: ""; position: absolute; left: 11px; top: 8px; bottom: 8px; width: 2px;
+  background: linear-gradient(var(--accent), color-mix(in srgb, var(--accent) 10%, transparent));
+}
+.tl-item { position: relative; margin-bottom: 28px; }
+.tl-item:last-child { margin-bottom: 0; }
+.tl-dot {
+  position: absolute; left: -36px; top: 26px; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--accent); display: grid; place-items: center;
+}
+.tl-dot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.tl-card { padding: 26px 28px; }
+.tl-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 16px; align-items: flex-start; margin-bottom: 8px; }
+.tl-head h3 { font-size: 1.25rem; margin: 0; }
+.tl-head .company { color: var(--accent); font-weight: 600; }
+.tl-date { font-family: var(--font-mono); font-size: .8rem; color: var(--text-muted); padding: 4px 10px; border: 1px solid var(--border); border-radius: 8px; white-space: nowrap; }
+.tl-card > p { color: var(--text-muted); }
+.results { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 18px 0; }
+.result { padding: 14px 16px; border-radius: 12px; background: var(--surface-strong); border: 1px solid var(--border); }
+.result b { display: block; font-size: 1.5rem; color: var(--accent); font-weight: 800; letter-spacing: -0.02em; }
+.result span { font-size: .87rem; color: var(--text-muted); }
+.duties li { position: relative; padding-left: 26px; margin-bottom: 8px; color: var(--text-muted); }
+.duties li::before {
+  content: "✓"; position: absolute; left: 0; top: 0; color: var(--pass); font-weight: 700; font-family: var(--font-mono);
+}
+
+/* =====================================================================
+   7. SKILLS
+   ===================================================================== */
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+@media (max-width: 400px) { .skills-grid { grid-template-columns: 1fr; } }
+.skill-card { padding: 26px; display: flex; flex-direction: column; gap: 14px; }
+.skill-card header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.skill-icon {
+  width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.skill-icon svg { width: 22px; height: 22px; }
+.skill-card h3 { font-size: 1.12rem; margin: 0; }
+.skill-card p { color: var(--text-muted); font-size: .94rem; margin: 0; }
+
+/* =====================================================================
+   8. PROJECTS
+   ===================================================================== */
+.projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+@media (max-width: 860px) { .projects-grid { grid-template-columns: 1fr; } }
+.project { padding: 28px; display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden; }
+.project::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2)); opacity: .8;
+}
+.project-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.project-type { font-family: var(--font-mono); font-size: .75rem; color: var(--text-muted); }
+.project h3 { font-size: 1.3rem; margin: 0; }
+.project dl { margin: 0; display: grid; gap: 12px; }
+.project dt { font-family: var(--font-mono); font-size: .74rem; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; }
+.project dd { margin: 0; color: var(--text-muted); font-size: .95rem; }
+.project dd.result-line { color: var(--text); font-weight: 500; }
+.project .link { margin-top: auto; padding-top: 6px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: .95rem; }
+.project .link svg { width: 18px; height: 18px; }
+
+/* =====================================================================
+   9. QA PROCESS (flow)
+   ===================================================================== */
+.flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; counter-reset: step; position: relative; }
+.flow::before {
+  content: ""; position: absolute; left: 10%; right: 10%; top: 38px; height: 2px;
+  background: repeating-linear-gradient(90deg, var(--accent) 0 8px, transparent 8px 16px);
+  opacity: .5; z-index: 0;
+}
+.step { position: relative; z-index: 1; text-align: center; padding: 0 4px; }
+.step-icon {
+  width: 76px; height: 76px; margin: 0 auto 16px; border-radius: 22px; display: grid; place-items: center;
+  background: var(--bg-2); border: 1px solid var(--border); box-shadow: var(--shadow); color: var(--accent);
+  transition: transform .25s, border-color .25s, background-color .25s;
+}
+.step:hover .step-icon { transform: translateY(-4px) rotate(-3deg); border-color: var(--accent); }
+.step-icon svg { width: 30px; height: 30px; }
+.step .num { font-family: var(--font-mono); font-size: .72rem; color: var(--accent); }
+.step h3 { font-size: 1.08rem; margin: 2px 0 6px; }
+.step p { font-size: .88rem; color: var(--text-muted); margin: 0; }
+@media (max-width: 860px) {
+  .flow { grid-template-columns: 1fr; gap: 0; }
+  .flow::before { left: 37px; right: auto; top: 20px; bottom: 20px; width: 2px; height: auto;
+    background: repeating-linear-gradient(180deg, var(--accent) 0 8px, transparent 8px 16px); }
+  .step { display: grid; grid-template-columns: 76px 1fr; gap: 18px; text-align: left; align-items: center; padding: 10px 0; }
+  .step-icon { margin: 0; }
+}
+
+/* =====================================================================
+   10. STATS STRIP
+   ===================================================================== */
+.stats { padding: 0; }
+.stats-inner {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; overflow: hidden;
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--accent) 10%, transparent), color-mix(in srgb, var(--accent-2) 10%, transparent)),
+    var(--surface);
+}
+.stat { padding: 34px 24px; text-align: center; border-right: 1px solid var(--border); }
+.stat:last-child { border-right: 0; }
+.stat .value { font-size: clamp(2rem, 4.4vw, 2.9rem); font-weight: 800; letter-spacing: -0.03em; color: var(--text); font-variant-numeric: tabular-nums; }
+.stat .value .plus { color: var(--accent); }
+.stat .label { font-family: var(--font-mono); font-size: .78rem; color: var(--text-muted); }
+@media (max-width: 760px) {
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .stat:nth-child(2) { border-right: 0; }
+  .stat:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+
+/* =====================================================================
+   11. LEADERSHIP & EDUCATION
+   ===================================================================== */
+.le-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+@media (max-width: 860px) { .le-grid { grid-template-columns: 1fr; } }
+.le-card { padding: 28px; }
+.le-card .le-head { display: flex; gap: 14px; align-items: center; margin-bottom: 18px; }
+.le-card h3 { font-size: 1.2rem; margin: 0; }
+.le-card .sub { color: var(--text-muted); font-size: .92rem; }
+.roles { position: relative; padding-left: 22px; }
+.roles::before { content: ""; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+.roles li { position: relative; margin-bottom: 14px; }
+.roles li:last-child { margin-bottom: 0; }
+.roles li::before {
+  content: ""; position: absolute; left: -22px; top: 7px; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--text-muted);
+}
+.roles li.current::before { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+.roles b { display: block; }
+.roles span { font-size: .88rem; color: var(--text-muted); }
+.edu-meta { display: grid; gap: 10px; margin-top: 6px; }
+.edu-meta div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--border); font-size: .95rem; }
+.edu-meta div:last-child { border-bottom: 0; }
+.edu-meta dt { color: var(--text-muted); font-family: var(--font-mono); font-size: .8rem; }
+.edu-meta dd { margin: 0; font-weight: 600; text-align: right; }
+
+/* =====================================================================
+   12. CONTACT
+   ===================================================================== */
+.contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 28px; align-items: start; }
+@media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
+.contact-links { display: grid; gap: 14px; }
+.contact-link { display: flex; align-items: center; gap: 16px; padding: 18px 20px; color: var(--text); }
+.contact-link:hover { text-decoration: none; }
+.contact-link .skill-icon { flex-shrink: 0; }
+.contact-link small { display: block; font-family: var(--font-mono); font-size: .74rem; color: var(--text-muted); }
+.contact-link strong { font-weight: 600; word-break: break-all; }
+.form { padding: 28px; display: grid; gap: 16px; }
+.field { display: grid; gap: 6px; }
+.field label { font-size: .88rem; font-weight: 600; }
+.field input, .field textarea {
+  width: 100%; font: inherit; color: var(--text); background: var(--surface-strong);
+  border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.field textarea { min-height: 140px; resize: vertical; }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+.field .error { font-size: .8rem; color: var(--fail); min-height: 1em; font-family: var(--font-mono); }
+.field.invalid input, .field.invalid textarea { border-color: var(--fail); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
+.form-status { font-family: var(--font-mono); font-size: .85rem; min-height: 1.3em; margin: 0; }
+.form-status.ok { color: var(--pass); }
+
+/* =====================================================================
+   13. FOOTER + BACK TO TOP
+   ===================================================================== */
+footer { padding: 36px 0; border-top: 1px solid var(--border); }
+footer .container { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; }
+footer p { margin: 0; color: var(--text-muted); font-size: .9rem; }
+footer .mono { font-family: var(--font-mono); font-size: .8rem; }
+.to-top {
+  position: fixed; right: 20px; bottom: 20px; z-index: 90;
+  width: 46px; height: 46px; border-radius: 14px; border: 1px solid var(--border);
+  background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; cursor: pointer;
+  box-shadow: 0 10px 24px -10px var(--accent);
+  opacity: 0; visibility: hidden; transform: translateY(10px);
+  transition: opacity .25s, transform .25s, visibility .25s;
+}
+.to-top.show { opacity: 1; visibility: visible; transform: none; }
+.to-top svg { width: 20px; height: 20px; }
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- =====================================================================
+     SVG ICON SPRITE — reused with <svg><use href="#i-name"/></svg>
+     ===================================================================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-bug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l1.9 1.9M16 2l-1.9 1.9M9 7.1V6a3 3 0 0 1 6 0v1.1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6z"/><path d="M12 20v-9M6.5 13H3M21 13h-3.5M6 9.5L3.5 7.5M18 9.5l2.5-2M6.5 17L4 19M17.5 17L20 19"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5z"/></symbol>
+    <symbol id="i-linkedin" viewBox="0 0 24 24" fill="currentColor"><path d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6h.1c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2zM7.1 20.5H3.5V9h3.6v11.5zM22.2 0H1.8C.8 0 0 .8 0 1.7v20.6c0 .9.8 1.7 1.8 1.7h20.4c1 0 1.8-.8 1.8-1.7V1.7C24 .8 23.2 0 22.2 0z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v2M12 20.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1.5 12h2M20.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 12l2 2 4-4"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></symbol>
+    <symbol id="i-api" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M4 7l3-3M4 7l3 3M20 17H10M20 17l-3-3M20 17l-3 3"/></symbol>
+    <symbol id="i-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4 2.5-2.5z"/></symbol>
+    <symbol id="i-plan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4V8z"/></symbol>
+    <symbol id="i-report" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-retest" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.8-3.4L23 10M1 14l4.7 4.4A9 9 0 0 0 20.5 15"/></symbol>
+    <symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.2 2.2 0 0 0-2.9-.1z"/><path d="M12 15l-3-3a22 22 0 0 1 2-4A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.7V17c0 .6-.5 1-1 1.2-1.2.5-2 2-2 3.8M14 14.7V17c0 .6.5 1 1 1.2 1.2.5 2 2 2 3.8"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></symbol>
+    <symbol id="i-grad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></symbol>
+    <symbol id="i-mobile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+  </defs>
+</svg>
+
+<!-- =====================================================================
+     NAVBAR
+     ===================================================================== -->
+<header class="nav" id="nav">
+  <div class="container">
+    <a class="logo" href="#home" aria-label="Jubayer Ahmed, back to top">
+      <svg width="22" height="22" aria-hidden="true" style="color:var(--accent)"><use href="#i-bug"/></svg>
+      jubayer<span class="dot">.qa</span>
+    </a>
+
+    <nav aria-label="Primary">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#leadership">Leadership</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme">
+        <svg class="moon" aria-hidden="true"><use href="#i-moon"/></svg>
+        <svg class="sun" aria-hidden="true"><use href="#i-sun"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+        <svg aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- =====================================================================
+     1. HERO
+     ===================================================================== -->
+<section class="hero" id="home" aria-labelledby="hero-title">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="grid"></div>
+    <div class="glow"></div>
+    <div class="glow b"></div>
+    <!-- Floating code tokens: edit or move freely -->
+    <span class="token" style="top:18%;left:6%">expect(page).toHaveURL()</span>
+    <span class="token" style="top:72%;left:4%;animation-delay:-4s">assert status === 200</span>
+    <span class="token" style="top:12%;left:58%;animation-delay:-2s">test.describe('checkout')</span>
+    <span class="token" style="top:86%;left:52%;animation-delay:-6s">✓ 128 passed</span>
+    <span class="token" style="top:44%;left:90%;animation-delay:-8s">await tap()</span>
+  </div>
+
+  <div class="container">
+    <div class="reveal">
+      <div class="status-pill"><span class="live" aria-hidden="true"></span> Open to new QA opportunities</div>
+      <h1 id="hero-title">Hi, I'm <span class="grad">Jubayer Ahmed</span></h1>
+      <p class="role">&gt; SQA Engineer · QA &amp; Test Automation</p>
+      <!-- One-line value statement -->
+      <p class="value">I find the bugs before your users do, and I write the automated tests that keep every release stable.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#projects">View Work <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <!-- CV: put your PDF next to this file as "jubayer-ahmed-cv.pdf" (or change the href) -->
+        <a class="btn btn-ghost" href="jubayer-ahmed-cv.pdf" download>Download CV <svg aria-hidden="true"><use href="#i-download"/></svg></a>
+      </div>
+    </div>
+
+    <!-- Terminal with typing effect (lines are set in the JS at the bottom) -->
+    <div class="card terminal reveal" role="img" aria-label="Terminal showing an automated test run: all tests passed">
+      <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span><em>~/qa — playwright</em></div>
+      <div class="terminal-body" id="terminal" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     2. ABOUT
+     ===================================================================== -->
+<section id="about" aria-labelledby="about-title">
+  <div class="container about-grid">
+    <!-- Profile photo placeholder. To use a real photo, replace this div with:
+         <img class="photo" src="your-photo.jpg" alt="Portrait of Jubayer Ahmed" /> -->
+    <div class="photo reveal" role="img" aria-label="Profile photo placeholder for Jubayer Ahmed">
+      <span class="initials" aria-hidden="true">JA</span>
+      <div class="tag" aria-hidden="true"><span>status: available</span><span class="badge-pass">PASSED</span></div>
+    </div>
+
+    <div class="about-text reveal">
+      <span class="eyebrow">about.me</span>
+      <h2 class="section-title" id="about-title">Careful by habit, curious by nature</h2>
+      <p>I'm an <strong>SQA Engineer at Appifylab</strong>, where I test web and Android apps from the first requirement to the final release. I enjoy breaking things on purpose so that real users never have to.</p>
+      <p>I work across <strong>manual testing</strong>, <strong>Playwright + TypeScript</strong> automation, <strong>Appium</strong> for mobile and <strong>API testing</strong>. I care about clear bug reports, honest status updates and a release that the team can trust.</p>
+      <dl class="quick-facts">
+        <div class="card"><dt>role</dt><dd>SQA Engineer</dd></div>
+        <div class="card"><dt>since</dt><dd>Feb 2025</dd></div>
+        <div class="card"><dt>degree</dt><dd>BSc in CSE</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     3. WORK SUMMARY (timeline)
+     Numbers below are PLACEHOLDERS — edit them to your real results.
+     ===================================================================== -->
+<section id="work" aria-labelledby="work-title">
+  <div class="container">
+    <div class="reveal">
+      <span class="eyebrow">work.log</span>
+      <h2 class="section-title" id="work-title">Work Summary</h2>
+      <p class="section-lead">Where I've been shipping quality, and what it changed for the team.</p>
+    </div>
+
+    <ol class="timeline">
+      <li class="tl-item reveal">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <article class="card tl-card">
+          <div class="tl-head">
+            <div>
+              <h3>SQA Engineer (QA &amp; Test Automation)</h3>
+              <span class="company">Appifylab</span>
+            </div>
+            <span class="tl-date">Feb 2025 — Present</span>
+          </div>
+          <p>Own testing for web and Android products: writing test cases, running manual and automated regressions, testing APIs and reporting quality to the team every day.</p>
+
+          <!-- Key results: edit the numbers and labels -->
+          <div class="results">
+            <div class="result"><b>120+</b><span>test cases written &amp; maintained</span></div>
+            <div class="result"><b>40%</b><span>faster regression with automation</span></div>
+            <div class="result"><b>300+</b><span>bugs reported with clear repro steps</span></div>
+            <div class="result"><b>10+</b><span>releases signed off</span></div>
+          </div>
+
+          <ul class="duties">
+            <li>Built Playwright + TypeScript suites for critical web user flows.</li>
+            <li>Automated Android smoke tests with Appium.</li>
+            <li>Validated REST APIs for status codes, schemas and edge cases.</li>
+            <li>Shared daily QA reports in Lark and tracked bugs in Trello and GitHub.</li>
+          </ul>
+        </article>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- =====================================================================
+     4. SKILLS
+     ===================================================================== -->
+<section id="skills" aria-labelledby="skills-title">
+  <div class="container">
+    <div class="reveal">
+      <span class="eyebrow">skills.json</span>
+      <h2 class="section-title" id="skills-title">Skills</h2>
+      <p class="section-lead">The tools and habits I use to make software reliable.</p>
+    </div>
+
+    <div class="skills-grid">
+      <article class="card hoverable skill-card reveal">
+        <header><div class="skill-icon" aria-hidden="true"><svg><use href="#i-clipboard"/></svg></div><span class="badge-pass">PASSED</span></header>
+        <h3>Manual Testing</h3>
+        <p>Functional, regression, smoke, exploratory and UI/UX testing across browsers and devices.</p>
+        <div class="chips"><span class="chip">Test cases</span><span class="chip">Exploratory</span><span class="chip">Regression</span><span class="chip">Cross-browser</span></div>
+      </article>
+
+      <article class="card hoverable skill-card reveal">
+        <header><div class="skill-icon" aria-hidden="true"><svg><use href="#i-code"/></svg></div><span class="badge-pass">PASSED</span></header>
+        <h3>Automation</h3>
+        <p>Maintainable end-to-end tests for web and mobile, using the Page Object Model.</p>
+        <div class="chips"><span class="chip">Playwright</span><span class="chip">TypeScript</span><span class="chip">Appium</span><span class="chip">POM</span></div>
+      </article>
+
+      <article class="card hoverable skill-card reveal">
+        <header><div class="skill-icon" aria-hidden="true"><svg><use href="#i-api"/></svg></div><span class="badge-pass">PASSED</span></header>
+        <h3>API Testing</h3>
+        <p>Checking endpoints for correct responses, status codes, auth and error handling.</p>
+        <div class="chips"><span class="chip">REST</span><span class="chip">Postman</span><span class="chip">Playwright API</span><span class="chip">JSON</span></div>
+      </article>
+
+      <article class="card hoverable skill-card reveal">
+        <header><div class="skill-icon" aria-hidden="true"><svg><use href="#i-tools"/></svg></div><span class="badge-pass">PASSED</span></header>
+        <h3>Tools</h3>
+        <p>Keeping work visible and organised for developers, PMs and stakeholders.</p>
+        <div class="chips"><span class="chip">Trello</span><span class="chip">GitHub</span><span class="chip">Lark</span><span class="chip">Git</span></div>
+      </article>
+
+      <article class="card hoverable skill-card reveal">
+        <header><div class="skill-icon" aria-hidden="true"><svg><use href="#i-bug"/></svg></div><span class="badge-pass">PASSED</span></header>
+        <h3>Bug Reporting</h3>
+        <p>Clear, reproducible reports with steps, expected vs. actual results, severity and evidence.</p>
+        <div class="chips"><span class="chip">Repro steps</span><span class="chip">Severity</span><span class="chip">Screenshots</span><span class="chip">Bug lifecycle</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     5. PROJECTS
+     Replace each GitHub link with the real repo URL.
+     ===================================================================== -->
+<section id="projects" aria-labelledby="projects-title">
+  <div class="container">
+    <div class="reveal">
+      <span class="eyebrow">projects/*</span>
+      <h2 class="section-title" id="projects-title">Projects</h2>
+      <p class="section-lead">A few pieces of QA work, each written as problem, approach and result.</p>
+    </div>
+
+    <div class="projects-grid">
+      <!-- Project 1 -->
+      <article class="card hoverable project reveal">
+        <div class="project-top"><span class="project-type">web · e2e automation</span><span class="badge-pass">PASSED</span></div>
+        <h3>Web App E2E Automation</h3>
+        <dl>
+          <div><dt>Problem</dt><dd>Manual regression of core flows took days before every release.</dd></div>
+          <div><dt>What I did</dt><dd>Built a Playwright + TypeScript suite with the Page Object Model, covering login, CRUD and checkout flows.</dd></div>
+          <div><dt>Tools</dt><dd class="chips"><span class="chip">Playwright</span><span class="chip">TypeScript</span><span class="chip">GitHub</span></dd></div>
+          <div><dt>Result</dt><dd class="result-line">Regression time cut by ~40% (placeholder).</dd></div>
+        </dl>
+        <a class="link" href="https://github.com/jubayerahmedd" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-github"/></svg> View on GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+      </article>
+
+      <!-- Project 2 -->
+      <article class="card hoverable project reveal">
+        <div class="project-top"><span class="project-type">android · mobile automation</span><span class="badge-pass">PASSED</span></div>
+        <h3>Android App Automation</h3>
+        <dl>
+          <div><dt>Problem</dt><dd>Smoke testing on several Android devices was slow and easy to skip.</dd></div>
+          <div><dt>What I did</dt><dd>Automated key smoke scenarios with Appium, with reusable locators and test data.</dd></div>
+          <div><dt>Tools</dt><dd class="chips"><span class="chip">Appium</span><span class="chip">TypeScript</span><span class="chip">Android</span></dd></div>
+          <div><dt>Result</dt><dd class="result-line">25+ smoke checks run on every build (placeholder).</dd></div>
+        </dl>
+        <a class="link" href="https://github.com/jubayerahmedd" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-github"/></svg> View on GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+      </article>
+
+      <!-- Project 3 -->
+      <article class="card hoverable project reveal">
+        <div class="project-top"><span class="project-type">process · reporting</span><span class="badge-pass">PASSED</span></div>
+        <h3>Daily QA Reporting</h3>
+        <dl>
+          <div><dt>Problem</dt><dd>The team had no single, clear view of product quality each day.</dd></div>
+          <div><dt>What I did</dt><dd>Set up a daily report: tests run, pass/fail, new bugs by severity and blockers, shared in Lark and linked to Trello.</dd></div>
+          <div><dt>Tools</dt><dd class="chips"><span class="chip">Lark</span><span class="chip">Trello</span><span class="chip">GitHub Issues</span></dd></div>
+          <div><dt>Result</dt><dd class="result-line">Critical bugs triaged within 24h (placeholder).</dd></div>
+        </dl>
+        <a class="link" href="https://github.com/jubayerahmedd" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-github"/></svg> View on GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+      </article>
+
+      <!-- Project 4 -->
+      <article class="card hoverable project reveal">
+        <div class="project-top"><span class="project-type">api · contract checks</span><span class="badge-pass">PASSED</span></div>
+        <h3>REST API Test Suite</h3>
+        <dl>
+          <div><dt>Problem</dt><dd>Backend changes sometimes broke the app without anyone noticing.</dd></div>
+          <div><dt>What I did</dt><dd>Wrote API tests for status codes, response schemas, auth and negative cases.</dd></div>
+          <div><dt>Tools</dt><dd class="chips"><span class="chip">Playwright API</span><span class="chip">Postman</span><span class="chip">JSON</span></dd></div>
+          <div><dt>Result</dt><dd class="result-line">60+ endpoints covered (placeholder).</dd></div>
+        </dl>
+        <a class="link" href="https://github.com/jubayerahmedd" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-github"/></svg> View on GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     6. QA PROCESS (Plan > Test > Report > Retest > Release)
+     ===================================================================== -->
+<section id="process" aria-labelledby="process-title">
+  <div class="container">
+    <div class="reveal">
+      <span class="eyebrow">qa.pipeline</span>
+      <h2 class="section-title" id="process-title">My QA Process</h2>
+      <p class="section-lead">The same five steps on every feature, so nothing reaches users untested.</p>
+    </div>
+
+    <ol class="flow">
+      <li class="step reveal">
+        <div class="step-icon" aria-hidden="true"><svg><use href="#i-plan"/></svg></div>
+        <div><span class="num">01</span><h3>Plan</h3><p>Read requirements, list risks and write test cases.</p></div>
+      </li>
+      <li class="step reveal">
+        <div class="step-icon" aria-hidden="true"><svg><use href="#i-play"/></svg></div>
+        <div><span class="num">02</span><h3>Test</h3><p>Run manual and automated tests on web, mobile and API.</p></div>
+      </li>
+      <li class="step reveal">
+        <div class="step-icon" aria-hidden="true"><svg><use href="#i-bug"/></svg></div>
+        <div><span class="num">03</span><h3>Report</h3><p>Log clear bugs with steps, evidence and severity.</p></div>
+      </li>
+      <li class="step reveal">
+        <div class="step-icon" aria-hidden="true"><svg><use href="#i-retest"/></svg></div>
+        <div><span class="num">04</span><h3>Retest</h3><p>Verify fixes and run regression around them.</p></div>
+      </li>
+      <li class="step reveal">
+        <div class="step-icon" aria-hidden="true"><svg><use href="#i-rocket"/></svg></div>
+        <div><span class="num">05</span><h3>Release</h3><p>Sign off with confidence, then watch for anything new.</p></div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- =====================================================================
+     7. STATS STRIP — edit data-target for each counter (placeholders)
+     ===================================================================== -->
+<section class="stats" aria-label="Key numbers">
+  <div class="container">
+    <div class="card stats-inner reveal">
+      <div class="stat"><div class="value"><span class="counter" data-target="300">0</span><span class="plus">+</span></div><div class="label">bugs found</div></div>
+      <div class="stat"><div class="value"><span class="counter" data-target="120">0</span><span class="plus">+</span></div><div class="label">test cases written</div></div>
+      <div class="stat"><div class="value"><span class="counter" data-target="8">0</span><span class="plus">+</span></div><div class="label">projects tested</div></div>
+      <div class="stat"><div class="value"><span class="counter" data-target="40">0</span><span class="plus">%</span></div><div class="label">faster regression</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     8. LEADERSHIP & EDUCATION
+     ===================================================================== -->
+<section id="leadership" aria-labelledby="le-title">
+  <div class="container">
+    <div class="reveal">
+      <span class="eyebrow">beyond.code</span>
+      <h2 class="section-title" id="le-title">Leadership &amp; Education</h2>
+      <p class="section-lead">Leading people taught me the same things QA needs: communication, ownership and follow-through.</p>
+    </div>
+
+    <div class="le-grid">
+      <article class="card le-card reveal">
+        <div class="le-head">
+          <div class="skill-icon" aria-hidden="true"><svg><use href="#i-trophy"/></svg></div>
+          <div><h3>MU Sports Club</h3><div class="sub">Metropolitan University</div></div>
+        </div>
+        <!-- Roles: newest first. Add years in the <span> if you like. -->
+        <ol class="roles">
+          <li class="current"><b>President</b><span>Led the club, its events and its committee.</span></li>
+          <li><b>Vice President</b><span>Coordinated tournaments and team logistics.</span></li>
+          <li><b>Office Secretary</b><span>Ran communication, records and scheduling.</span></li>
+        </ol>
+      </article>
+
+      <article class="card le-card reveal">
+        <div class="le-head">
+          <div class="skill-icon" aria-hidden="true"><svg><use href="#i-grad"/></svg></div>
+          <div><h3>BSc in Computer Science &amp; Engineering</h3><div class="sub">Metropolitan University</div></div>
+        </div>
+        <!-- Edit the years / CGPA rows, or delete any you don't want to show -->
+        <dl class="edu-meta">
+          <div><dt>degree</dt><dd>BSc in CSE</dd></div>
+          <div><dt>university</dt><dd>Metropolitan University</dd></div>
+          <div><dt>years</dt><dd>20XX — 20XX</dd></div>
+          <div><dt>focus</dt><dd>Software Engineering, Testing</dd></div>
+        </dl>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     9. CONTACT
+     Replace the email address and LinkedIn URL with your own.
+     ===================================================================== -->
+<section id="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="reveal">
+      <span class="eyebrow">contact()</span>
+      <h2 class="section-title" id="contact-title">Let's work together</h2>
+      <p class="section-lead">Hiring for QA or test automation? I'd be glad to hear about it.</p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-links reveal">
+        <a class="card hoverable contact-link" id="emailLink" href="mailto:your.email@example.com">
+          <div class="skill-icon" aria-hidden="true"><svg><use href="#i-mail"/></svg></div>
+          <div><small>email</small><strong>your.email@example.com</strong></div>
+        </a>
+        <a class="card hoverable contact-link" href="https://www.linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer">
+          <div class="skill-icon" aria-hidden="true"><svg><use href="#i-linkedin"/></svg></div>
+          <div><small>linkedin</small><strong>linkedin.com/in/your-profile</strong><span class="sr-only"> (opens in a new tab)</span></div>
+        </a>
+        <a class="card hoverable contact-link" href="https://github.com/jubayerahmedd" target="_blank" rel="noopener noreferrer">
+          <div class="skill-icon" aria-hidden="true"><svg><use href="#i-github"/></svg></div>
+          <div><small>github</small><strong>github.com/jubayerahmedd</strong><span class="sr-only"> (opens in a new tab)</span></div>
+        </a>
+      </div>
+
+      <!-- Contact form: no server needed. On submit it checks the fields, then
+           opens the visitor's email app with the message filled in. -->
+      <form class="card form reveal" id="contactForm" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-err" />
+            <span class="error" id="name-err" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-err" />
+            <span class="error" id="email-err" aria-live="polite"></span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required aria-describedby="message-err"></textarea>
+          <span class="error" id="message-err" aria-live="polite"></span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:space-between">
+          <p class="form-status" id="formStatus" role="status"></p>
+          <button class="btn btn-primary" type="submit">Send message <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- =====================================================================
+     10. FOOTER
+     ===================================================================== -->
+<footer>
+  <div class="container">
+    <p>© <span id="year">2026</span> Jubayer Ahmed · SQA Engineer</p>
+    <p class="mono"><span style="color:var(--pass)">✓</span> all checks passed · built with care</p>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">
+  <svg aria-hidden="true"><use href="#i-up"/></svg>
+</button>
+
+<script>
+/* =====================================================================
+   SETTINGS — the only JS you usually need to edit
+   ===================================================================== */
+const CONTACT_EMAIL = "your.email@example.com"; // where the contact form sends to (also update the email link above)
+
+// Terminal lines for the hero typing effect. "cls" is the colour class.
+const TERMINAL_LINES = [
+  { text: "$ npx playwright test", cls: "prompt" },
+  { text: "Running 128 tests using 4 workers", cls: "dim" },
+  { text: "  ✓ auth › user can log in (1.2s)", cls: "ok" },
+  { text: "  ✓ cart › add & remove items (2.4s)", cls: "ok" },
+  { text: "  ✓ checkout › pays with saved card (3.1s)", cls: "ok" },
+  { text: "  ✓ api › GET /orders returns 200 (0.3s)", cls: "ok" },
+  { text: "", cls: "" },
+  { text: "  128 passed (42.6s)", cls: "ok" },
+  { text: "$ echo \"ready to release\"", cls: "prompt" },
+];
+
+/* =====================================================================
+   SCRIPT — behaviour (you shouldn't need to change this)
+   ===================================================================== */
+(function () {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const root = document.documentElement;
+
+  // Safe localStorage helpers (can fail in private mode)
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  };
+
+  /* ---------- Theme toggle (dark by default) ---------- */
+  const themeBtn = document.getElementById("themeToggle");
+  function applyTheme(t) {
+    root.setAttribute("data-theme", t);
+    themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
+    document.querySelector('meta[name="theme-color"]').setAttribute("content", t === "dark" ? "#0a1224" : "#f4f7fc");
+  }
+  applyTheme(store.get("theme") === "light" ? "light" : "dark");
+  themeBtn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    applyTheme(next);
+    store.set("theme", next);
+  });
+
+  /* ---------- Mobile menu ---------- */
+  const menuBtn = document.getElementById("menuBtn");
+  const navLinks = document.getElementById("navLinks");
+  function setMenu(open) {
+    navLinks.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+    menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  }
+  menuBtn.addEventListener("click", () => setMenu(!navLinks.classList.contains("open")));
+  navLinks.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
+
+  /* ---------- Navbar background + back-to-top on scroll ---------- */
+  const nav = document.getElementById("nav");
+  const toTop = document.getElementById("toTop");
+  function onScroll() {
+    const y = window.scrollY;
+    nav.classList.toggle("scrolled", y > 20);
+    toTop.classList.toggle("show", y > 600);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+  toTop.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    document.querySelector(".logo").focus({ preventScroll: true });
+  });
+
+  /* ---------- Active section highlight in navbar ---------- */
+  const links = [...navLinks.querySelectorAll("a")];
+  const sections = links.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  function updateActive() {
+    const line = window.innerHeight * 0.35;
+    let current = null;
+    for (const s of sections) { if (s.getBoundingClientRect().top <= line) current = s.id; }
+    // At the very bottom, highlight the last section
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) current = sections[sections.length - 1].id;
+    links.forEach((a) => {
+      const on = a.getAttribute("href") === "#" + current;
+      a.classList.toggle("active", on);
+      if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+    });
+  }
+  window.addEventListener("scroll", updateActive, { passive: true });
+  window.addEventListener("resize", updateActive);
+  updateActive();
+
+  /* ---------- Scroll reveal ---------- */
+  const revealEls = document.querySelectorAll(".reveal");
+  if (reduceMotion || !("IntersectionObserver" in window)) {
+    revealEls.forEach((el) => el.classList.add("in"));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    revealEls.forEach((el, i) => {
+      el.style.transitionDelay = (i % 4) * 70 + "ms"; // small stagger
+      io.observe(el);
+    });
+  }
+
+  /* ---------- Animated counters ---------- */
+  const counters = document.querySelectorAll(".counter");
+  function runCounter(el) {
+    const target = parseInt(el.dataset.target, 10) || 0;
+    if (reduceMotion) { el.textContent = target; return; }
+    const duration = 1600;
+    const start = performance.now();
+    (function tick(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased);
+      if (p < 1) requestAnimationFrame(tick);
+    })(start);
+  }
+  if ("IntersectionObserver" in window) {
+    const cio = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { runCounter(en.target); cio.unobserve(en.target); } });
+    }, { threshold: 0.5 });
+    counters.forEach((c) => cio.observe(c));
+  } else {
+    counters.forEach(runCounter);
+  }
+
+  /* ---------- Terminal typing effect ---------- */
+  const term = document.getElementById("terminal");
+  function lineEl(cls) { const s = document.createElement("span"); if (cls) s.className = cls; term.appendChild(s); return s; }
+  const cursor = document.createElement("span");
+  cursor.className = "cursor";
+
+  if (reduceMotion) {
+    TERMINAL_LINES.forEach((l) => { lineEl(l.cls).textContent = l.text; term.appendChild(document.createTextNode("\n")); });
+    term.appendChild(cursor);
+  } else {
+    let li = 0;
+    function typeLine() {
+      if (li >= TERMINAL_LINES.length) { term.appendChild(cursor); return; }
+      const { text, cls } = TERMINAL_LINES[li];
+      const el = lineEl(cls);
+      el.after(cursor);
+      const isCommand = text.startsWith("$");
+      let ci = 0;
+      (function typeChar() {
+        if (isCommand && ci < text.length) {
+          el.textContent = text.slice(0, ++ci);
+          setTimeout(typeChar, 38 + Math.random() * 40);
+        } else {
+          el.textContent = text; // output lines appear at once, like a real terminal
+          term.insertBefore(document.createTextNode("\n"), cursor);
+          li++;
+          setTimeout(typeLine, isCommand ? 450 : 260);
+        }
+      })();
+    }
+    setTimeout(typeLine, 600);
+  }
+
+  /* ---------- Contact form (validation + mailto) ---------- */
+  const form = document.getElementById("contactForm");
+  const status = document.getElementById("formStatus");
+  const rules = {
+    name: (v) => v.trim().length >= 2 || "Please enter your name.",
+    email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) || "Please enter a valid email.",
+    message: (v) => v.trim().length >= 10 || "Please write at least 10 characters.",
+  };
+  function check(field) {
+    const input = form.elements[field];
+    const result = rules[field](input.value);
+    const wrap = input.closest(".field");
+    const err = document.getElementById(field + "-err");
+    const ok = result === true;
+    wrap.classList.toggle("invalid", !ok);
+    input.setAttribute("aria-invalid", String(!ok));
+    err.textContent = ok ? "" : "✗ " + result;
+    return ok;
+  }
+  Object.keys(rules).forEach((f) => form.elements[f].addEventListener("blur", () => check(f)));
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const results = Object.keys(rules).map(check);
+    if (results.includes(false)) {
+      status.className = "form-status";
+      status.textContent = "";
+      form.querySelector('[aria-invalid="true"]').focus();
+      return;
+    }
+    const name = form.elements.name.value.trim();
+    const email = form.elements.email.value.trim();
+    const message = form.elements.message.value.trim();
+    const subject = encodeURIComponent("Portfolio enquiry from " + name);
+    const body = encodeURIComponent(message + "\n\n— " + name + " (" + email + ")");
+    window.location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + subject + "&body=" + body;
+    status.className = "form-status ok";
+    status.textContent = "✓ Passed — opening your email app…";
+    form.reset();
+  });
+
+  /* ---------- Footer year ---------- */
+  document.getElementById("year").textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
