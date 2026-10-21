@@ -351,6 +351,69 @@ section { padding: 96px 0; position: relative; }
 .skill-card p { color: var(--text-muted); font-size: .94rem; margin: 0; }
 
 /* =====================================================================
+   7.5 TOOLS AND EXPERTISE
+   ===================================================================== */
+.tools-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; margin-bottom: 48px; }
+.tools-head .section-title { margin: 0; }
+.tools-lead { margin: 0; max-width: 420px; }
+.tools-group { margin-bottom: 40px; }
+.tools-group:last-child { margin-bottom: 0; }
+.tools-group h3 { font-size: 1.05rem; margin: 0 0 4px; }
+.tools-group > p { color: var(--text-muted); font-size: .92rem; margin: 0 0 20px; }
+
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+.tool-card { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.tool-card strong { font-size: .98rem; }
+.tool-card-desc { color: var(--text-muted); font-size: .82rem; line-height: 1.35; }
+
+.tool-icon {
+  width: 42px; height: 42px; border-radius: 10px; display: grid; place-items: center;
+  font-family: var(--font-mono); font-weight: 700; font-size: .78rem; letter-spacing: .01em;
+}
+
+.tools-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.tool-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px 6px 6px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border);
+  font-size: .85rem; font-weight: 600; color: var(--text);
+  transition: border-color .2s ease, transform .2s ease;
+}
+.tool-chip:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); transform: translateY(-2px); }
+.tool-chip-icon {
+  width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center;
+  font-family: var(--font-mono); font-weight: 700; font-size: .65rem; flex-shrink: 0;
+}
+
+/* Per-tool brand colours — a flat tint/solid per logo, not an exact mark */
+.tool-playwright  { background: color-mix(in srgb, #2EAD33 22%, transparent); color: #45e04c; border: 1px solid color-mix(in srgb, #2EAD33 40%, transparent); }
+.tool-ts          { background: #3178C6; color: #fff; }
+.tool-postman     { background: #FF6C37; color: #fff; }
+.tool-gha         { background: #2088FF; color: #fff; }
+.tool-github      { background: #f5f7fa; color: #10151f; }
+.tool-chrome      { background: linear-gradient(135deg, #EA4335, #FBBC05, #34A853, #4285F4); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.45); }
+.tool-trello      { background: #0052CC; color: #fff; }
+
+.tool-selenium    { background: #43B02A; color: #fff; }
+.tool-cypress     { background: #0B5345; color: #7CF0C2; }
+.tool-appium      { background: #E91E63; color: #fff; }
+.tool-js          { background: #F7DF1E; color: #16181d; }
+.tool-swagger     { background: #85EA2D; color: #16181d; }
+.tool-graphql     { background: #E10098; color: #fff; }
+.tool-sql         { background: #336791; color: #fff; }
+.tool-jenkins     { background: #D24939; color: #fff; }
+.tool-docker      { background: #2496ED; color: #fff; }
+.tool-lambdatest  { background: #2DCCA7; color: #06281f; }
+.tool-testmu      { background: #6C63FF; color: #fff; }
+.tool-saucelabs   { background: #2EC4B6; color: #06281f; }
+.tool-appsscript  { background: #4285F4; color: #fff; }
+.tool-linux       { background: #FCC624; color: #16181d; }
+
+@media (max-width: 640px) {
+  .tools-head { align-items: flex-start; }
+}
+
+/* =====================================================================
    8. PROJECTS
    ===================================================================== */
 .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
@@ -718,6 +781,81 @@ footer .mono { font-family: var(--font-mono); font-size: .8rem; }
         <p>Clear, reproducible reports with steps, expected vs. actual results, severity and evidence.</p>
         <div class="chips"><span class="chip">Repro steps</span><span class="chip">Severity</span><span class="chip">Screenshots</span><span class="chip">Bug lifecycle</span></div>
       </article>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     4.5 TOOLS AND EXPERTISE
+     ===================================================================== -->
+<section id="tools" aria-labelledby="tools-title">
+  <div class="container">
+    <div class="tools-head reveal">
+      <h2 class="section-title" id="tools-title">Tools and<br>expertise</h2>
+      <p class="section-lead tools-lead">What I reach for every day, what else I've worked with, and the kinds of testing I'm strongest at.</p>
+    </div>
+
+    <div class="tools-group reveal">
+      <h3>Every day</h3>
+      <p>My working stack on Skreno, EzyCourse and EzyCommunity.</p>
+      <div class="tools-grid">
+        <article class="card hoverable tool-card reveal">
+          <div class="tool-icon tool-playwright" aria-hidden="true">PW</div>
+          <strong>Playwright</strong>
+          <span class="tool-card-desc">UI and API automation</span>
+        </article>
+        <article class="card hoverable tool-card reveal">
+          <div class="tool-icon tool-ts" aria-hidden="true">TS</div>
+          <strong>TypeScript</strong>
+          <span class="tool-card-desc">Test code</span>
+        </article>
+        <article class="card hoverable tool-card reveal">
+          <div class="tool-icon tool-postman" aria-hidden="true">PM</div>
+          <strong>Postman</strong>
+          <span class="tool-card-desc">API testing</span>
+        </article>
+        <article class="card hoverable tool-card reveal">
+          <div class="tool-icon tool-gha" aria-hidden="true">GA</div>
+          <strong>GitHub Actions</strong>
+          <span class="tool-card-desc">CI for test suites</span>
+        </article>
+        <article class="card hoverable tool-card reveal">
+          <div class="tool-icon tool-github" aria-hidden="true">Gh</div>
+          <strong>Git and GitHub</strong>
+          <span class="tool-card-desc">Version control, PRs</span>
+        </article>
+        <article class="card hoverable tool-card reveal">
+          <div class="tool-icon tool-chrome" aria-hidden="true">Cr</div>
+          <strong>Chrome DevTools</strong>
+          <span class="tool-card-desc">Debugging, network</span>
+        </article>
+        <article class="card hoverable tool-card reveal">
+          <div class="tool-icon tool-trello" aria-hidden="true">Tr</div>
+          <strong>Trello</strong>
+          <span class="tool-card-desc">Bug tracking</span>
+        </article>
+      </div>
+    </div>
+
+    <div class="tools-group reveal">
+      <h3>Also worked with</h3>
+      <p>Tools I've used on real projects and can pick back up quickly.</p>
+      <div class="tools-chips">
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-selenium" aria-hidden="true">Se</span>Selenium</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-cypress" aria-hidden="true">Cy</span>Cypress</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-appium" aria-hidden="true">Ap</span>Appium</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-js" aria-hidden="true">JS</span>JavaScript</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-swagger" aria-hidden="true">Sw</span>Swagger</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-graphql" aria-hidden="true">GQ</span>GraphQL</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-sql" aria-hidden="true">DB</span>SQL</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-jenkins" aria-hidden="true">Jk</span>Jenkins</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-docker" aria-hidden="true">Do</span>Docker</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-lambdatest" aria-hidden="true">LT</span>LambdaTest</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-testmu" aria-hidden="true">TM</span>TestMu AI</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-saucelabs" aria-hidden="true">SL</span>Sauce Labs</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-appsscript" aria-hidden="true">AS</span>Apps Script</span>
+        <span class="tool-chip reveal"><span class="tool-chip-icon tool-linux" aria-hidden="true">Lx</span>Linux</span>
+      </div>
     </div>
   </div>
 </section>
