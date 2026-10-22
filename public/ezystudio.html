@@ -168,22 +168,22 @@
   </div>
 
   <!-- Header Navigation Bar -->
-  <nav class="relative z-20 w-full max-w-7xl mx-auto px-5 sm:px-8 py-6 flex items-center justify-between">
+  <nav class="relative z-20 w-full max-w-7xl mx-auto px-5 sm:px-8 py-6 flex flex-wrap items-center justify-between gap-y-3">
     <div class="flex items-center gap-3">
       <a href="/" class="flex items-center gap-3" aria-label="Back to jubayer.qa home">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-300 flex items-center justify-center font-bold text-black text-sm tracking-wider shadow-glow-sm">
+        <div class="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-300 flex items-center justify-center font-bold text-black text-sm tracking-wider shadow-glow-sm">
           ES
         </div>
-        <span class="font-bold tracking-tight text-lg text-white">EzyStudio <span class="text-brand-mint text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/20 ml-1.5">Arena</span></span>
+        <span class="font-bold tracking-tight text-lg text-white whitespace-nowrap">EzyStudio <span class="text-brand-mint text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/20 ml-1.5">Arena</span></span>
       </a>
     </div>
 
-    <div class="flex items-center gap-3">
-      <button id="clockModeBtn" onclick="toggleClockSettings()" class="text-xs font-mono px-3 py-1.5 rounded-full bg-black/40 border border-emerald-500/20 hover:border-emerald-400/50 text-gray-300 hover:text-white transition flex items-center gap-1.5">
-        <i data-lucide="clock-3" class="w-3.5 h-3.5 text-brand-mint"></i>
-        <span>Live Sync: <span id="clockSyncStatus" class="text-brand-mint">Active</span></span>
+    <div class="flex items-center gap-2 sm:gap-3">
+      <button id="clockModeBtn" onclick="toggleClockSettings()" class="text-xs font-mono px-3 py-1.5 rounded-full bg-black/40 border border-emerald-500/20 hover:border-emerald-400/50 text-gray-300 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap">
+        <i data-lucide="clock-3" class="w-3.5 h-3.5 text-brand-mint shrink-0"></i>
+        <span><span class="hidden sm:inline">Live Sync: </span><span id="clockSyncStatus" class="text-brand-mint">Active</span></span>
       </button>
-      <button onclick="toggleAudioFx()" id="audioBtn" title="Toggle UI Sound" class="p-2 rounded-full bg-black/40 border border-white/10 hover:border-emerald-400/40 text-gray-400 hover:text-white transition">
+      <button onclick="toggleAudioFx()" id="audioBtn" title="Toggle UI Sound" class="p-2 rounded-full bg-black/40 border border-white/10 hover:border-emerald-400/40 text-gray-400 hover:text-white transition shrink-0">
         <i data-lucide="volume-2" id="audioIcon" class="w-4 h-4"></i>
       </button>
     </div>
@@ -242,17 +242,17 @@
         </div>
 
         <!-- Quick Stats Strip -->
-        <div class="pt-4 flex items-center gap-6 text-xs text-gray-400">
+        <div class="pt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-400">
           <div class="flex items-center gap-1.5">
-            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
             <span>No purchase required</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <i data-lucide="users" class="w-4 h-4 text-emerald-400"></i>
+            <i data-lucide="users" class="w-4 h-4 text-emerald-400 shrink-0"></i>
             <span>1,420+ Builders registered</span>
           </div>
-          <div class="hidden sm:flex items-center gap-1.5">
-            <i data-lucide="radio" class="w-4 h-4 text-red-400 animate-pulse"></i>
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="radio" class="w-4 h-4 text-red-400 animate-pulse shrink-0"></i>
             <span>Live judging stream</span>
           </div>
         </div>
@@ -426,14 +426,14 @@
 
     <!-- PRIZE BREAKDOWN SECTION (3 Stat Cards matching screenshot) -->
     <div class="space-y-4 pt-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
         <!-- 1ST PLACE CARD -->
         <div class="card-gradient-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300">
           <div>
-            <div class="flex items-center justify-between text-xs font-mono text-emerald-400 tracking-wider mb-2">
+            <div class="flex flex-wrap items-center justify-between gap-y-1 text-xs font-mono text-emerald-400 tracking-wider mb-2">
               <div class="flex items-center gap-2">
-                <i data-lucide="trophy" class="w-4 h-4 text-emerald-400"></i>
+                <i data-lucide="trophy" class="w-4 h-4 text-emerald-400 shrink-0"></i>
                 <span class="font-bold">1ST</span>
               </div>
               <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Grand Winner</span>
@@ -450,9 +450,9 @@
         <!-- 2ND PLACE CARD -->
         <div class="card-gradient-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300">
           <div>
-            <div class="flex items-center justify-between text-xs font-mono text-gray-400 tracking-wider mb-2">
+            <div class="flex flex-wrap items-center justify-between gap-y-1 text-xs font-mono text-gray-400 tracking-wider mb-2">
               <div class="flex items-center gap-2">
-                <i data-lucide="medal" class="w-4 h-4 text-teal-400"></i>
+                <i data-lucide="medal" class="w-4 h-4 text-teal-400 shrink-0"></i>
                 <span class="font-bold text-gray-300">2ND</span>
               </div>
               <span class="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20">Runner Up</span>
@@ -469,9 +469,9 @@
         <!-- 3RD PLACE CARD -->
         <div class="card-gradient-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300">
           <div>
-            <div class="flex items-center justify-between text-xs font-mono text-gray-400 tracking-wider mb-2">
+            <div class="flex flex-wrap items-center justify-between gap-y-1 text-xs font-mono text-gray-400 tracking-wider mb-2">
               <div class="flex items-center gap-2">
-                <i data-lucide="award" class="w-4 h-4 text-emerald-500"></i>
+                <i data-lucide="award" class="w-4 h-4 text-emerald-500 shrink-0"></i>
                 <span class="font-bold text-gray-300">3RD</span>
               </div>
               <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Finalist</span>
@@ -501,8 +501,8 @@
   <!-- Footer -->
   <footer class="relative z-10 border-t border-white/10 bg-black/40 py-6 text-center text-xs text-gray-400">
     <div class="max-w-7xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p>© 2026 EzyStudio Inc. All contest rights reserved.</p>
-      <div class="flex items-center gap-6">
+      <p class="text-center sm:text-left">© 2026 EzyStudio Inc. All contest rights reserved.</p>
+      <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
         <a href="#rules" onclick="openRulesModal()" class="hover:text-brand-mint transition">Contest Rules & FAQ</a>
         <a href="#judges" onclick="openJudgesModal()" class="hover:text-brand-mint transition">Judging Panel</a>
         <a href="#stream" onclick="simulateStreamAlert()" class="hover:text-brand-mint transition">Watch Stream Info</a>
@@ -514,7 +514,7 @@
 
   <!-- 1. ENTRY MODAL ("Enter Free") -->
   <div id="entryModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="relative w-full max-w-lg bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+    <div class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
 
       <div class="flex items-center justify-between border-b border-white/10 pb-4">
         <div class="flex items-center gap-2">
@@ -557,7 +557,7 @@
 
   <!-- 2. CALENDAR OPTIONS MODAL -->
   <div id="calendarModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="relative w-full max-w-md bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-5">
+    <div class="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-5">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <h3 class="text-base font-bold text-white flex items-center gap-2">
           <i data-lucide="calendar" class="w-5 h-5 text-emerald-400"></i>
@@ -599,7 +599,7 @@
 
   <!-- 3. TIMER TARGET ADJUST MODAL -->
   <div id="targetModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="relative w-full max-w-sm bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-4">
+    <div class="relative w-full max-w-sm max-h-[90vh] overflow-y-auto bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <h3 class="text-sm font-bold text-white flex items-center gap-2">
           <i data-lucide="clock" class="w-4 h-4 text-emerald-400"></i>
