@@ -76,6 +76,33 @@
       animation: floatTrophy 4.5s ease-in-out infinite;
     }
 
+    /* Native grid for the prize cards, independent of the Tailwind CDN's
+       runtime JIT: that script sometimes fails to generate a responsive
+       utility (seen here as the 3-column grid collapsing to a sliver of
+       its real width while sibling sections rendered fine), so this
+       layout-critical rule is hand-written instead of left to it. */
+    .ezy-prize-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+      width: 100%;
+    }
+    @media (min-width: 640px) {
+      .ezy-prize-grid {
+        gap: 1.25rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .ezy-prize-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (min-width: 1024px) {
+      .ezy-prize-grid {
+        gap: 1.5rem;
+      }
+    }
+
     /* Strict Card Protection against crushing or collapsing */
     .prize-card {
       width: 100%;
@@ -331,7 +358,7 @@
     <section class="w-full space-y-4 pt-2">
 
       <!-- 3-Column Grid across md/lg/xl, 1 column on mobile. Total width: 100% -->
-      <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+      <div class="ezy-prize-grid">
 
         <!-- 1ST PLACE CARD -->
         <div class="prize-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
