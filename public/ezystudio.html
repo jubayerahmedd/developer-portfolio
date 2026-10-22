@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EzyStudio Build Cup - Season 01</title>
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Canvas Confetti -->
@@ -21,26 +21,18 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
             mono: ['"Space Grotesk"', 'monospace'],
           },
           colors: {
             brand: {
-              dark: '#070d0a',
-              card: '#0d1512',
-              cardHover: '#13201b',
-              border: 'rgba(52, 211, 153, 0.15)',
-              borderActive: 'rgba(52, 211, 153, 0.4)',
+              bg: '#050a08',
+              surface: '#0c1612',
               mint: '#5eead4',
-              accent: '#34d399',
-              emerald: '#10b981',
-              glow: '#2dd4bf',
+              emerald: '#34d399',
+              darkMint: '#10b981',
+              accent: '#2dd4bf',
             }
-          },
-          boxShadow: {
-            'glow-sm': '0 0 15px -3px rgba(52, 211, 153, 0.3)',
-            'glow-btn': '0 4px 28px rgba(45, 212, 191, 0.4), 0 0 12px rgba(16, 185, 129, 0.25)',
-            'glow-card': '0 0 35px -10px rgba(16, 185, 129, 0.2)',
           }
         }
       }
@@ -48,397 +40,312 @@
   </script>
 
   <style>
-    /* Custom Background Patterns & Ambient Glows */
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #060b08;
+      background-color: #050a08;
       background-image:
-        radial-gradient(ellipse at 80% 25%, rgba(45, 212, 191, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at 20% 75%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
-        radial-gradient(ellipse at 50% 10%, rgba(52, 211, 153, 0.05) 0%, transparent 60%);
+        radial-gradient(circle at 50% 0%, rgba(45, 212, 191, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 85% 25%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 15% 75%, rgba(52, 211, 153, 0.05) 0%, transparent 45%);
       background-attachment: fixed;
     }
 
-    /* Subtle dot grid overlay matching the design */
-    .bg-grid-dots {
-      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-      background-size: 28px 28px;
+    /* Subtle dot grid overlay */
+    .bg-dots {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 24px 24px;
     }
 
-    /* Trophy floating animation */
-    @keyframes trophyFloat {
-      0%, 100% {
-        transform: translateY(0px) rotate(0deg);
-      }
-      50% {
-        transform: translateY(-9px) rotate(0.4deg);
-      }
-    }
-    .animate-float {
-      animation: trophyFloat 5s ease-in-out infinite;
-    }
-
-    /* Subtle pulse animation for glowing pedestals */
-    @keyframes glowPulse {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 0.9; transform: scale(1.04); }
-    }
-    .animate-glow-pulse {
-      animation: glowPulse 4.5s ease-in-out infinite;
-    }
-
-    /* Shimmer effect for prize cards */
-    .card-gradient-border {
-      position: relative;
-      background: linear-gradient(135deg, rgba(20, 36, 28, 0.8), rgba(9, 18, 14, 0.95));
-      border: 1px solid rgba(52, 211, 153, 0.18);
-      backdrop-filter: blur(12px);
-    }
-    .card-gradient-border:hover {
-      border-color: rgba(94, 234, 212, 0.45);
-      box-shadow: 0 10px 30px -10px rgba(45, 212, 191, 0.2);
-    }
-
-    /* Gradient Prize Text */
-    .mint-gradient-text {
-      background: linear-gradient(180deg, #bbf7d0 0%, #6ee7b7 35%, #2dd4bf 75%, #0d9488 100%);
+    /* Mint Gradient for Hero Win $10,000 */
+    .mint-grad-text {
+      background: linear-gradient(180deg, #d1fae5 0%, #6ee7b7 35%, #2dd4bf 75%, #059669 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* Star Sparkle CSS */
-    .sparkle {
-      position: absolute;
-      background: #5eead4;
-      border-radius: 50%;
-      box-shadow: 0 0 8px 1px #5eead4;
-      animation: sparkleFade 3s ease-in-out infinite;
+    /* Trophy floating animation */
+    @keyframes floatTrophy {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
     }
-    @keyframes sparkleFade {
-      0%, 100% { opacity: 0.2; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.3); }
+    .trophy-float {
+      animation: floatTrophy 4.5s ease-in-out infinite;
     }
 
-    /* Flip clock number flash */
-    .number-tick {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Strict Card Protection against crushing or collapsing */
+    .prize-card {
+      width: 100%;
+      min-width: 0; /* Prevents flex/grid blowouts */
+      background: rgba(12, 22, 18, 0.82);
+      border: 1px solid rgba(52, 211, 153, 0.18);
+      backdrop-filter: blur(12px);
+      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
     }
-    .number-tick.tick {
-      transform: scale(1.12);
+    .prize-card:hover {
+      border-color: rgba(94, 234, 212, 0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px -10px rgba(45, 212, 191, 0.18);
+    }
+
+    /* Live second tick flash */
+    .tick-anim {
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .tick-anim.pop {
+      transform: scale(1.1);
       color: #5eead4;
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #060b08;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #193327;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #2dd4bf;
     }
   </style>
 </head>
 <body class="text-white min-h-screen flex flex-col justify-between selection:bg-brand-mint selection:text-black relative overflow-x-hidden">
 
-  <!-- Ambient Background Spotlights & Angular Light Beams (matching the original artwork) -->
-  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <!-- Dot pattern -->
-    <div class="absolute inset-0 bg-grid-dots opacity-35"></div>
-
-    <!-- Angular top-center light beam projection -->
-    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[850px] h-[550px] opacity-15"
-         style="background: conic-gradient(from 180deg at 50% 0%, transparent 160deg, #34d399 180deg, transparent 200deg); filter: blur(55px);">
-    </div>
-
-    <!-- Right Side Trophy Backlight Halo -->
-    <div class="absolute top-20 right-8 md:right-32 w-[380px] h-[380px] bg-brand-glow/20 rounded-full blur-[110px] animate-glow-pulse"></div>
-    <div class="absolute bottom-16 left-12 w-[320px] h-[320px] bg-emerald-600/10 rounded-full blur-[90px]"></div>
-
-    <!-- Floating Star Sparkles -->
-    <div class="sparkle w-1.5 h-1.5 top-32 right-1/4 animate-delay-100"></div>
-    <div class="sparkle w-2 h-2 top-48 right-[18%] opacity-80 animate-delay-700" style="animation-duration: 4s;"></div>
-    <div class="sparkle w-1 h-1 top-72 right-[38%] opacity-60 animate-delay-300" style="animation-duration: 2.5s;"></div>
-    <div class="sparkle w-1.5 h-1.5 top-24 left-[14%] opacity-50" style="animation-duration: 3.5s;"></div>
-    <div class="sparkle w-2 h-2 top-96 right-[8%] opacity-70" style="animation-duration: 5s;"></div>
+  <!-- Ambient Decorative Background -->
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <div class="absolute inset-0 bg-dots"></div>
+    <!-- Top spot gradient -->
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-brand-emerald/10 blur-[120px] rounded-full"></div>
+    <div class="absolute top-1/4 right-5 sm:right-24 w-80 h-80 bg-brand-accent/10 blur-[100px] rounded-full"></div>
   </div>
 
-  <!-- Header Navigation Bar -->
-  <nav class="relative z-20 w-full max-w-7xl mx-auto px-5 sm:px-8 py-6 flex flex-wrap items-center justify-between gap-y-3">
-    <div class="flex items-center gap-3">
-      <a href="/" class="flex items-center gap-3" aria-label="Back to jubayer.qa home">
-        <div class="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-300 flex items-center justify-center font-bold text-black text-sm tracking-wider shadow-glow-sm">
+  <!-- Top Subtle Brand Bar -->
+  <header class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+    <div class="flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2.5" aria-label="Back to jubayer.qa home">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center font-black text-black text-xs">
           ES
         </div>
-        <span class="font-bold tracking-tight text-lg text-white whitespace-nowrap">EzyStudio <span class="text-brand-mint text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/20 ml-1.5">Arena</span></span>
+        <span class="font-bold text-sm sm:text-base tracking-tight text-gray-200">EzyStudio</span>
       </a>
+
+      <!-- Sync Status Pill -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/20 text-xs font-mono text-emerald-300">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Nov 28 · 7 PM ET</span>
+      </div>
     </div>
+  </header>
 
-    <div class="flex items-center gap-2 sm:gap-3">
-      <button id="clockModeBtn" onclick="toggleClockSettings()" class="text-xs font-mono px-3 py-1.5 rounded-full bg-black/40 border border-emerald-500/20 hover:border-emerald-400/50 text-gray-300 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap">
-        <i data-lucide="clock-3" class="w-3.5 h-3.5 text-brand-mint shrink-0"></i>
-        <span><span class="hidden sm:inline">Live Sync: </span><span id="clockSyncStatus" class="text-brand-mint">Active</span></span>
-      </button>
-      <button onclick="toggleAudioFx()" id="audioBtn" title="Toggle UI Sound" class="p-2 rounded-full bg-black/40 border border-white/10 hover:border-emerald-400/40 text-gray-400 hover:text-white transition shrink-0">
-        <i data-lucide="volume-2" id="audioIcon" class="w-4 h-4"></i>
-      </button>
-    </div>
-  </nav>
+  <!-- MAIN WRAPPER: Full width container with safe max-width and margin -->
+  <main class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 flex-grow flex flex-col justify-center gap-10 lg:gap-14">
 
-  <!-- Main Content Container -->
-  <main class="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 pt-4 pb-16 flex-grow flex flex-col justify-center">
+    <!-- HERO SECTION: 2-Column Responsive Layout -->
+    <section class="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
 
-    <!-- Hero Two-Column Grid: Left (Pitch & Actions) + Right (Trophy & Autorun Timer) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-14">
+      <!-- LEFT COLUMN (Pitch & CTA) -->
+      <div class="lg:col-span-7 flex flex-col items-start text-left space-y-5 sm:space-y-6">
 
-      <!-- LEFT COLUMN: Contest Details -->
-      <div class="lg:col-span-7 space-y-6">
-
-        <!-- Eyebrow Badges (Exact match to screenshot) -->
+        <!-- Tags: THE EZYSTUDIO BUILD CUP + SEASON 01 -->
         <div class="flex flex-wrap items-center gap-2.5">
-          <span class="text-[11px] font-mono tracking-widest uppercase px-3 py-1 rounded border border-white/15 bg-white/5 text-gray-300 backdrop-blur-sm">
-            The EzyStudio Build Cup
+          <span class="text-[11px] font-mono tracking-widest uppercase px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">
+            THE EZYSTUDIO BUILD CUP
           </span>
-          <span class="text-[11px] font-mono tracking-widest uppercase px-3 py-1 rounded border border-emerald-500/25 bg-emerald-950/30 text-emerald-300 backdrop-blur-sm">
-            Season 01
+          <span class="text-[11px] font-mono tracking-widest uppercase px-3 py-1 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 font-semibold">
+            SEASON 01
           </span>
         </div>
 
-        <!-- Hero Headline with Large Gradient $10,000 -->
+        <!-- Headline & Win $10,000 -->
         <div class="space-y-1">
-          <h1 class="text-3xl sm:text-5xl lg:text-[56px] font-extrabold tracking-tight text-white leading-tight">
+          <h1 class="text-3xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight text-white leading-[1.12]">
             Build it. Get judged live.
           </h1>
-          <div class="flex items-baseline gap-3 flex-wrap pt-1">
-            <span class="text-3xl sm:text-5xl lg:text-[56px] font-bold text-white tracking-tight">Win</span>
-            <span class="mint-gradient-text text-5xl sm:text-7xl lg:text-[88px] font-black tracking-tight drop-shadow-sm select-none">
+          <div class="flex items-baseline gap-3 flex-wrap pt-0.5">
+            <span class="text-3xl sm:text-5xl lg:text-[54px] font-bold text-white tracking-tight">Win</span>
+            <span class="mint-grad-text text-5xl sm:text-7xl lg:text-[84px] font-black tracking-tight leading-none drop-shadow-sm select-none">
               $10,000
             </span>
           </div>
         </div>
 
-        <!-- Narrative Description -->
-        <p class="text-gray-400 text-base sm:text-lg max-w-xl leading-relaxed font-normal">
+        <!-- Description paragraph -->
+        <p class="text-gray-400 text-sm sm:text-base lg:text-[17px] leading-relaxed max-w-xl">
           Our first build contest, open to everyone. Build a website or app on EzyStudio, rally the votes, and watch real business owners judge the top 10 live on stream.
         </p>
 
-        <!-- CTA Buttons -->
-        <div class="pt-2 flex flex-wrap items-center gap-4">
-          <!-- Primary CTA: Enter Free -->
-          <button onclick="openEntryModal()" class="group relative px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-white font-semibold text-sm sm:text-base flex items-center gap-2.5 shadow-glow-btn transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0">
+        <!-- Action CTAs -->
+        <div class="flex flex-wrap items-center gap-3.5 pt-1 w-full sm:w-auto">
+          <!-- Primary CTA Button -->
+          <button onclick="openModal('entryModal')" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-white font-semibold text-sm sm:text-base flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(45,212,191,0.35)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0">
             <span>Enter free</span>
-            <i data-lucide="arrow-right" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"></i>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
 
-          <!-- Secondary CTA: Add to Calendar -->
-          <button onclick="openCalendarOptions()" class="px-5 py-3.5 rounded-xl border border-white/20 hover:border-emerald-400/50 bg-black/30 hover:bg-white/5 text-gray-200 hover:text-white font-medium text-sm sm:text-base flex items-center gap-2.5 transition backdrop-blur-sm">
+          <!-- Secondary Calendar Button -->
+          <button onclick="openModal('calendarModal')" class="w-full sm:w-auto px-5 py-3.5 rounded-xl border border-white/15 hover:border-emerald-400/50 bg-black/40 hover:bg-white/5 text-gray-200 hover:text-white font-medium text-sm sm:text-base flex items-center justify-center gap-2.5 transition backdrop-blur-sm">
             <i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i>
             <span>Add the final to my calendar</span>
           </button>
         </div>
 
-        <!-- Quick Stats Strip -->
-        <div class="pt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-400">
+        <!-- Sub-features -->
+        <div class="flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-gray-400 pt-1">
           <div class="flex items-center gap-1.5">
-            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
             <span>No purchase required</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <i data-lucide="users" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <i data-lucide="users" class="w-3.5 h-3.5 text-emerald-400"></i>
             <span>1,420+ Builders registered</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <i data-lucide="radio" class="w-4 h-4 text-red-400 animate-pulse shrink-0"></i>
+            <i data-lucide="radio" class="w-3.5 h-3.5 text-red-400 animate-pulse"></i>
             <span>Live judging stream</span>
           </div>
         </div>
 
       </div>
 
-      <!-- RIGHT COLUMN: Centered 3D Cup + Autorun Countdown -->
-      <div class="lg:col-span-5 flex flex-col items-center justify-center relative mt-6 lg:mt-0">
+      <!-- RIGHT COLUMN (Trophy + Countdown Timer) -->
+      <div class="lg:col-span-5 flex flex-col items-center justify-center w-full">
 
-        <!-- Trophy Graphic Centerpiece -->
-        <div class="relative w-full max-w-[340px] flex flex-col items-center">
+        <!-- Trophy & Pedestal -->
+        <div class="relative w-full max-w-[280px] sm:max-w-[320px] flex flex-col items-center">
 
-          <!-- Ambient Trophy Pedestal Glow -->
-          <div class="absolute bottom-12 w-48 h-12 bg-emerald-500/25 rounded-full blur-2xl"></div>
+          <!-- Soft glow beneath trophy -->
+          <div class="absolute bottom-8 w-44 h-10 bg-emerald-500/25 rounded-full blur-xl pointer-events-none"></div>
 
-          <!-- Illustrated Trophy SVG (Faithfully crafted to replicate image) -->
-          <div class="relative z-10 animate-float cursor-pointer" onclick="celebrateTrophyClick()" title="Click to celebrate!">
-            <svg class="w-64 sm:w-72 h-auto drop-shadow-[0_20px_35px_rgba(45,212,191,0.25)]" viewBox="0 0 320 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Trophy SVG -->
+          <div class="trophy-float cursor-pointer select-none" onclick="triggerConfetti()" title="EzyStudio Build Cup Trophy">
+            <svg class="w-56 sm:w-64 h-auto drop-shadow-[0_15px_30px_rgba(45,212,191,0.2)]" viewBox="0 0 320 300" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <linearGradient id="cupRimGrad" x1="60" y1="20" x2="260" y2="20" gradientUnits="userSpaceOnUse">
+                <linearGradient id="cupRim" x1="60" y1="20" x2="260" y2="20" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stop-color="#4ade80"/>
-                  <stop offset="45%" stop-color="#86efac"/>
+                  <stop offset="50%" stop-color="#86efac"/>
                   <stop offset="100%" stop-color="#34d399"/>
                 </linearGradient>
-
-                <linearGradient id="cupBodyGrad" x1="160" y1="35" x2="160" y2="190" gradientUnits="userSpaceOnUse">
+                <linearGradient id="cupBody" x1="160" y1="35" x2="160" y2="190" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stop-color="#6ee7b7"/>
-                  <stop offset="35%" stop-color="#34d399"/>
+                  <stop offset="40%" stop-color="#34d399"/>
                   <stop offset="85%" stop-color="#14532d"/>
                   <stop offset="100%" stop-color="#064e3b"/>
                 </linearGradient>
-
-                <linearGradient id="cupInnerShade" x1="90" y1="40" x2="230" y2="170" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#a7f3d0" stop-opacity="0.8"/>
-                  <stop offset="50%" stop-color="#2dd4bf" stop-opacity="0.1"/>
-                  <stop offset="100%" stop-color="#022c22" stop-opacity="0.8"/>
-                </linearGradient>
-
-                <linearGradient id="handleGradLeft" x1="20" y1="90" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+                <linearGradient id="handleL" x1="20" y1="90" x2="90" y2="90" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stop-color="#86efac"/>
                   <stop offset="100%" stop-color="#2dd4bf"/>
                 </linearGradient>
-
-                <linearGradient id="handleGradRight" x1="230" y1="90" x2="300" y2="90" gradientUnits="userSpaceOnUse">
+                <linearGradient id="handleR" x1="230" y1="90" x2="300" y2="90" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stop-color="#2dd4bf"/>
                   <stop offset="100%" stop-color="#86efac"/>
                 </linearGradient>
-
-                <linearGradient id="stemGrad" x1="160" y1="180" x2="160" y2="230" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#34d399"/>
-                  <stop offset="60%" stop-color="#059669"/>
-                  <stop offset="100%" stop-color="#047857"/>
-                </linearGradient>
-
-                <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="8" result="blur"/>
-                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                </filter>
               </defs>
 
-              <!-- Left Handle -->
-              <path d="M92 48C45 48 24 80 24 108C24 142 56 166 94 158"
-                    stroke="url(#handleGradLeft)" stroke-width="15" stroke-linecap="round" fill="none" opacity="0.95"/>
-              <path d="M92 48C48 48 34 78 34 108C34 135 60 152 92 148"
-                    stroke="#14532d" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.3"/>
+              <!-- Handles -->
+              <path d="M92 48C45 48 24 80 24 108C24 142 56 166 94 158" stroke="url(#handleL)" stroke-width="14" stroke-linecap="round" fill="none"/>
+              <path d="M228 48C275 48 296 80 296 108C296 142 264 166 226 158" stroke="url(#handleR)" stroke-width="14" stroke-linecap="round" fill="none"/>
 
-              <!-- Right Handle -->
-              <path d="M228 48C275 48 296 80 296 108C296 142 264 166 226 158"
-                    stroke="url(#handleGradRight)" stroke-width="15" stroke-linecap="round" fill="none" opacity="0.95"/>
-              <path d="M228 48C272 48 286 78 286 108C286 135 260 152 228 148"
-                    stroke="#14532d" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.3"/>
+              <!-- Main Body -->
+              <path d="M78 38C78 38 82 172 160 178C238 172 242 38 242 38L78 38Z" fill="url(#cupBody)"/>
 
-              <!-- Main Trophy Bowl -->
-              <path d="M78 38C78 38 82 172 160 178C238 172 242 38 242 38L78 38Z"
-                    fill="url(#cupBodyGrad)"/>
-              <path d="M78 38C78 38 82 172 160 178C238 172 242 38 242 38L78 38Z"
-                    fill="url(#cupInnerShade)"/>
+              <!-- Top Rim -->
+              <ellipse cx="160" cy="38" rx="82" ry="12" fill="url(#cupRim)"/>
+              <ellipse cx="160" cy="36" rx="74" ry="7" fill="#134e4a" opacity="0.45"/>
 
-              <!-- Top Rim Cap -->
-              <ellipse cx="160" cy="38" rx="82" ry="12" fill="url(#cupRimGrad)"/>
-              <ellipse cx="160" cy="36" rx="74" ry="8" fill="#134e4a" opacity="0.45"/>
+              <!-- Dark Star Emblem -->
+              <path d="M160 72L167.8 87.8L185.3 90.3L172.6 102.7L175.6 120L160 111.8L144.4 120L147.4 102.7L134.7 90.3L152.2 87.8L160 72Z" fill="#0d2b22" opacity="0.95"/>
 
-              <!-- Star Center Emblem (from reference) -->
-              <path d="M160 70L168.5 87.2L187.5 90L173.7 103.4L177 122.3L160 113.3L143 122.3L146.3 103.4L132.5 90L151.5 87.2L160 70Z"
-                    fill="#133e31" opacity="0.85"/>
-              <path d="M160 72L167.8 87.8L185.3 90.3L172.6 102.7L175.6 120L160 111.8L144.4 120L147.4 102.7L134.7 90.3L152.2 87.8L160 72Z"
-                    fill="#0a2a22" opacity="0.9"/>
-
-              <!-- Stem Neck -->
-              <path d="M140 176H180V208C180 216 194 224 204 226H116C126 224 140 216 140 208V176Z"
-                    fill="url(#stemGrad)"/>
-
-              <!-- Base Pedestal Foot -->
-              <ellipse cx="160" cy="228" rx="52" ry="10" fill="#2dd4bf" opacity="0.8"/>
-              <path d="M112 228C112 228 110 240 120 244C134 249 186 249 200 244C210 240 208 228 208 228H112Z"
-                    fill="#0f3d32"/>
+              <!-- Stem Neck & Base -->
+              <path d="M140 176H180V208C180 216 194 224 204 226H116C126 224 140 216 140 208V176Z" fill="#10b981"/>
+              <ellipse cx="160" cy="228" rx="52" ry="9" fill="#2dd4bf"/>
+              <path d="M112 228C112 228 110 240 120 244C134 249 186 249 200 244C210 240 208 228 208 228H112Z" fill="#0b2a22"/>
             </svg>
           </div>
 
-          <!-- Pedestal Badge 'SEASON 1' directly beneath trophy -->
-        <div class="relative -mt-4 z-20">
-          <div class="px-5 py-2 rounded-lg bg-[#0e1915] border-2 border-[#1e3b2e] shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex items-center justify-center">
-            <span class="font-mono text-sm tracking-[0.25em] font-extrabold text-[#7bedc5] uppercase">
-              SEASON 1
+          <!-- SEASON 1 Badge -->
+          <div class="relative -mt-3 z-20">
+            <div class="px-5 py-1.5 rounded-lg bg-[#0a1410] border-2 border-[#1c382b] shadow-xl flex items-center justify-center">
+              <span class="font-mono text-xs sm:text-sm tracking-[0.22em] font-extrabold text-[#7bedc5] uppercase">
+                SEASON 1
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- COUNTDOWN TIMER MODULE -->
+        <div class="w-full max-w-[340px] sm:max-w-[380px] mt-6 space-y-3">
+
+          <!-- Event Header Text -->
+          <div class="text-center space-y-1">
+            <p class="text-[11px] sm:text-xs font-mono tracking-widest text-gray-300 uppercase flex items-center justify-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              <span>LIVE FINAL · SAT, NOV 28 · 7 PM ET</span>
+            </p>
+            <!-- User Timezone Pill -->
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/20 text-[11px] text-emerald-300/90 font-mono">
+              <i data-lucide="globe" class="w-3 h-3 text-brand-mint"></i>
+              <span id="userLocalPill">Detecting local time...</span>
+            </div>
+          </div>
+
+          <!-- 4 Grid Boxes -->
+          <div class="grid grid-cols-4 gap-2 sm:gap-2.5">
+
+            <!-- DAYS -->
+            <div class="bg-black/50 border border-white/10 rounded-xl py-2.5 px-1.5 flex flex-col items-center justify-center backdrop-blur-md">
+              <span id="daysBox" class="tick-anim font-mono text-xl sm:text-2xl font-bold text-white tracking-tight">--</span>
+              <span class="text-[9px] sm:text-[10px] font-mono tracking-widest text-gray-400 uppercase mt-0.5">DAYS</span>
+            </div>
+
+            <!-- HOURS -->
+            <div class="bg-black/50 border border-white/10 rounded-xl py-2.5 px-1.5 flex flex-col items-center justify-center backdrop-blur-md">
+              <span id="hoursBox" class="tick-anim font-mono text-xl sm:text-2xl font-bold text-white tracking-tight">--</span>
+              <span class="text-[9px] sm:text-[10px] font-mono tracking-widest text-gray-400 uppercase mt-0.5">HRS</span>
+            </div>
+
+            <!-- MINUTES -->
+            <div class="bg-black/50 border border-white/10 rounded-xl py-2.5 px-1.5 flex flex-col items-center justify-center backdrop-blur-md">
+              <span id="minsBox" class="tick-anim font-mono text-xl sm:text-2xl font-bold text-white tracking-tight">--</span>
+              <span class="text-[9px] sm:text-[10px] font-mono tracking-widest text-gray-400 uppercase mt-0.5">MIN</span>
+            </div>
+
+            <!-- SECONDS (Live Glowing Card) -->
+            <div class="bg-black/50 border border-emerald-400/30 rounded-xl py-2.5 px-1.5 flex flex-col items-center justify-center backdrop-blur-md shadow-[0_0_15px_rgba(52,211,153,0.12)]">
+              <span id="secsBox" class="tick-anim font-mono text-xl sm:text-2xl font-bold text-brand-mint tracking-tight">--</span>
+              <span class="text-[9px] sm:text-[10px] font-mono tracking-widest text-emerald-400 uppercase mt-0.5">SEC</span>
+            </div>
+
+          </div>
+
+          <!-- Sync details & copy link -->
+          <div class="flex items-center justify-between text-[11px] text-gray-400 px-1">
+            <span class="flex items-center gap-1.5 text-xs text-gray-300">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              Sync: 7:00 PM EST (UTC-5)
             </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- AUTORUN LIVE COUNTDOWN COMPONENT -->
-      <div class="w-full max-w-sm mt-7 space-y-3">
-
-        <!-- Event Date Header -->
-        <div class="text-center space-y-1">
-          <p class="text-[11px] sm:text-xs font-mono tracking-widest text-gray-300 uppercase flex items-center justify-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-            <span>LIVE FINAL · SAT, NOV 28 · 7 PM ET</span>
-          </p>
-          <!-- Local Timezone Equivalent Pill -->
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/50 border border-emerald-500/20 text-[11px] text-emerald-300/90 font-mono">
-            <i data-lucide="globe" class="w-3 h-3 text-brand-mint"></i>
-            <span id="userLocalTimeDisplay">Your Time: Detecting...</span>
-          </div>
-        </div>
-
-        <!-- 4 Time Units Grid -->
-        <div class="grid grid-cols-4 gap-2.5 sm:gap-3">
-
-          <!-- DAYS -->
-          <div class="bg-black/45 border border-white/10 hover:border-emerald-500/30 rounded-xl py-3 px-2 flex flex-col items-center justify-center backdrop-blur-md transition">
-            <span id="daysVal" class="number-tick font-mono text-2xl sm:text-3xl font-bold text-white tracking-tight">--</span>
-            <span class="text-[10px] font-mono tracking-widest text-gray-400 uppercase mt-0.5">DAYS</span>
+            <button onclick="copyShareText()" class="hover:text-brand-mint underline underline-offset-4 decoration-emerald-500/40 text-xs flex items-center gap-1">
+              <i data-lucide="share-2" class="w-3 h-3"></i>
+              <span>Share Time</span>
+            </button>
           </div>
 
-          <!-- HOURS -->
-          <div class="bg-black/45 border border-white/10 hover:border-emerald-500/30 rounded-xl py-3 px-2 flex flex-col items-center justify-center backdrop-blur-md transition">
-            <span id="hoursVal" class="number-tick font-mono text-2xl sm:text-3xl font-bold text-white tracking-tight">--</span>
-            <span class="text-[10px] font-mono tracking-widest text-gray-400 uppercase mt-0.5">HRS</span>
-          </div>
-
-          <!-- MINUTES -->
-          <div class="bg-black/45 border border-white/10 hover:border-emerald-500/30 rounded-xl py-3 px-2 flex flex-col items-center justify-center backdrop-blur-md transition">
-            <span id="minsVal" class="number-tick font-mono text-2xl sm:text-3xl font-bold text-white tracking-tight">--</span>
-            <span class="text-[10px] font-mono tracking-widest text-gray-400 uppercase mt-0.5">MIN</span>
-          </div>
-
-          <!-- SECONDS (Autorunning Live) -->
-          <div class="bg-black/45 border border-emerald-500/30 shadow-[0_0_15px_rgba(52,211,153,0.15)] rounded-xl py-3 px-2 flex flex-col items-center justify-center backdrop-blur-md relative overflow-hidden">
-            <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-300"></div>
-            <span id="secsVal" class="number-tick font-mono text-2xl sm:text-3xl font-bold text-brand-mint tracking-tight">--</span>
-            <span class="text-[10px] font-mono tracking-widest text-emerald-400 uppercase mt-0.5">SEC</span>
-          </div>
-
-        </div>
-
-        <!-- Live ticking indicator bar -->
-        <div class="flex items-center justify-between text-[11px] text-gray-400 px-1 pt-1">
-          <span class="flex items-center gap-1.5 text-xs text-gray-300">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Sync: 7:00 PM EST (UTC-5)
-          </span>
-          <button onclick="copyTargetTimestamp()" class="hover:text-brand-mint underline underline-offset-4 decoration-emerald-500/40 text-xs flex items-center gap-1">
-            <i data-lucide="copy" class="w-3 h-3"></i>
-            <span>Share Time</span>
-          </button>
         </div>
 
       </div>
 
-    </div>
+    </section>
 
-    <!-- PRIZE BREAKDOWN SECTION (3 Stat Cards matching screenshot) -->
-    <div class="space-y-4 pt-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <!-- PRIZE BREAKDOWN SECTION: Full-width Grid with guaranteed no-collapse -->
+    <section class="w-full space-y-4 pt-2">
+
+      <!-- 3-Column Grid across md/lg/xl, 1 column on mobile. Total width: 100% -->
+      <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
 
         <!-- 1ST PLACE CARD -->
-        <div class="card-gradient-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300">
+        <div class="prize-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
           <div>
-            <div class="flex flex-wrap items-center justify-between gap-y-1 text-xs font-mono text-emerald-400 tracking-wider mb-2">
-              <div class="flex items-center gap-2">
+            <div class="flex items-center justify-between text-xs font-mono text-emerald-400 mb-2">
+              <div class="flex items-center gap-1.5">
                 <i data-lucide="trophy" class="w-4 h-4 text-emerald-400 shrink-0"></i>
                 <span class="font-bold">1ST</span>
               </div>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Grand Winner</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 whitespace-nowrap">
+                Grand Winner
+              </span>
             </div>
-            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-3">
+            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-2">
               $5,000
             </div>
           </div>
@@ -448,16 +355,18 @@
         </div>
 
         <!-- 2ND PLACE CARD -->
-        <div class="card-gradient-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300">
+        <div class="prize-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
           <div>
-            <div class="flex flex-wrap items-center justify-between gap-y-1 text-xs font-mono text-gray-400 tracking-wider mb-2">
-              <div class="flex items-center gap-2">
+            <div class="flex items-center justify-between text-xs font-mono text-gray-400 mb-2">
+              <div class="flex items-center gap-1.5">
                 <i data-lucide="medal" class="w-4 h-4 text-teal-400 shrink-0"></i>
                 <span class="font-bold text-gray-300">2ND</span>
               </div>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20">Runner Up</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20 whitespace-nowrap">
+                Runner Up
+              </span>
             </div>
-            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-3">
+            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-2">
               $3,000
             </div>
           </div>
@@ -467,16 +376,18 @@
         </div>
 
         <!-- 3RD PLACE CARD -->
-        <div class="card-gradient-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300">
+        <div class="prize-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
           <div>
-            <div class="flex flex-wrap items-center justify-between gap-y-1 text-xs font-mono text-gray-400 tracking-wider mb-2">
-              <div class="flex items-center gap-2">
+            <div class="flex items-center justify-between text-xs font-mono text-gray-400 mb-2">
+              <div class="flex items-center gap-1.5">
                 <i data-lucide="award" class="w-4 h-4 text-emerald-500 shrink-0"></i>
                 <span class="font-bold text-gray-300">3RD</span>
               </div>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Finalist</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">
+                Finalist
+              </span>
             </div>
-            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-3">
+            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-2">
               $2,000
             </div>
           </div>
@@ -487,67 +398,66 @@
 
       </div>
 
-      <!-- Bottom Tagline (Exact wording from screenshot) -->
-      <div class="text-center pt-3">
+      <!-- Bottom Tagline -->
+      <div class="text-center pt-2">
         <p class="text-xs sm:text-sm text-gray-400 font-normal flex items-center justify-center gap-1.5">
-          <i data-lucide="sparkles" class="w-4 h-4 text-brand-mint"></i>
+          <i data-lucide="sparkles" class="w-4 h-4 text-brand-mint shrink-0"></i>
           <span>Season 1 of many. As EzyStudio grows, so does the prize.</span>
         </p>
       </div>
-    </div>
+
+    </section>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="relative z-10 border-t border-white/10 bg-black/40 py-6 text-center text-xs text-gray-400">
-    <div class="max-w-7xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-center sm:text-left">© 2026 EzyStudio Inc. All contest rights reserved.</p>
-      <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-        <a href="#rules" onclick="openRulesModal()" class="hover:text-brand-mint transition">Contest Rules & FAQ</a>
-        <a href="#judges" onclick="openJudgesModal()" class="hover:text-brand-mint transition">Judging Panel</a>
-        <a href="#stream" onclick="simulateStreamAlert()" class="hover:text-brand-mint transition">Watch Stream Info</a>
+  <!-- Clean Footer -->
+  <footer class="relative z-10 border-t border-white/10 bg-black/30 py-5 text-center text-xs text-gray-400">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p>© 2026 EzyStudio Inc. All contest rights reserved.</p>
+      <div class="flex items-center gap-5 text-gray-300">
+        <a href="javascript:void(0)" onclick="showToast('Contest open to builders worldwide.')" class="hover:text-brand-mint transition">Rules & FAQ</a>
+        <a href="javascript:void(0)" onclick="showToast('Judging Panel: 4 verified business owners & agency directors.')" class="hover:text-brand-mint transition">Judges</a>
+        <a href="javascript:void(0)" onclick="showToast('Stream link will be sent prior to the event.')" class="hover:text-brand-mint transition">Stream Link</a>
       </div>
     </div>
   </footer>
 
-  <!-- ================= MODALS & OVERLAYS ================= -->
+  <!-- ================= MODALS ================= -->
 
-  <!-- 1. ENTRY MODAL ("Enter Free") -->
-  <div id="entryModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
-
-      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+  <!-- 1. Entry Modal -->
+  <div id="entryModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-[#0c1612] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div class="flex items-center gap-2">
-          <div class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
-            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          <div class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="text-lg font-bold text-white">Enter the Build Cup</h3>
-            <p class="text-xs text-gray-400">Free submission. Season 01 closes Nov 28.</p>
+            <h3 class="text-base font-bold text-white">Enter the Build Cup</h3>
+            <p class="text-[11px] text-gray-400">Free submission · Closes Nov 28</p>
           </div>
         </div>
-        <button onclick="closeModal('entryModal')" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/5">
+        <button onclick="closeModal('entryModal')" class="text-gray-400 hover:text-white p-1">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <form id="buildEntryForm" onsubmit="handleEntrySubmit(event)" class="space-y-4 text-sm">
+      <form onsubmit="handleRegistration(event)" class="space-y-3.5 text-sm">
         <div>
-          <label class="block text-gray-300 text-xs font-semibold mb-1">Your Full Name</label>
-          <input required type="text" placeholder="Sarah Connor" class="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 focus:border-emerald-400 focus:outline-none text-white">
+          <label class="block text-gray-300 text-xs font-semibold mb-1">Your Name</label>
+          <input required type="text" placeholder="Sarah Connor" class="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 focus:border-emerald-400 focus:outline-none text-white text-sm">
         </div>
         <div>
-          <label class="block text-gray-300 text-xs font-semibold mb-1">Work / Project Email</label>
-          <input required type="email" placeholder="sarah@example.com" class="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 focus:border-emerald-400 focus:outline-none text-white">
+          <label class="block text-gray-300 text-xs font-semibold mb-1">Email Address</label>
+          <input required type="email" placeholder="sarah@example.com" class="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 focus:border-emerald-400 focus:outline-none text-white text-sm">
         </div>
         <div>
-          <label class="block text-gray-300 text-xs font-semibold mb-1">EzyStudio Project URL or Name (Optional)</label>
-          <input type="text" placeholder="ezystudio.com/@my-project" class="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 focus:border-emerald-400 focus:outline-none text-white">
+          <label class="block text-gray-300 text-xs font-semibold mb-1">Project Name / URL (Optional)</label>
+          <input type="text" placeholder="ezystudio.com/@my-project" class="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 focus:border-emerald-400 focus:outline-none text-white text-sm">
         </div>
-
         <div class="pt-2">
-          <button type="submit" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold flex items-center justify-center gap-2 shadow-glow-sm transition">
-            <span>Claim Free Contest Ticket</span>
+          <button type="submit" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold flex items-center justify-center gap-2 transition">
+            <span>Claim Contest Ticket</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
@@ -555,9 +465,9 @@
     </div>
   </div>
 
-  <!-- 2. CALENDAR OPTIONS MODAL -->
-  <div id="calendarModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-5">
+  <!-- 2. Calendar Modal -->
+  <div id="calendarModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-[#0c1612] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <h3 class="text-base font-bold text-white flex items-center gap-2">
           <i data-lucide="calendar" class="w-5 h-5 text-emerald-400"></i>
@@ -569,27 +479,27 @@
       </div>
 
       <p class="text-xs text-gray-300">
-        Live Final Stream: <strong>Saturday, November 28 at 7:00 PM ET</strong>. Pick your calendar provider below:
+        Live Final Stream: <strong>Saturday, November 28 at 7:00 PM ET</strong>.
       </p>
 
       <div class="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/20 text-xs text-emerald-300 font-mono flex items-center justify-between">
         <span>In your timezone:</span>
-        <strong id="modalLocalTimePreview">--</strong>
+        <strong id="modalLocalPreview">--</strong>
       </div>
 
-      <div class="grid grid-cols-1 gap-2.5 text-sm">
-        <button onclick="addGoogleCalendar()" class="w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-400/40 text-left flex items-center justify-between transition">
+      <div class="grid grid-cols-1 gap-2.5 text-sm pt-1">
+        <button onclick="openGoogleCalendar()" class="w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-400/40 text-left flex items-center justify-between transition">
           <span class="flex items-center gap-2.5">
-            <i data-lucide="globe" class="w-4 h-4 text-brand-mint"></i>
+            <i data-lucide="calendar-plus" class="w-4 h-4 text-brand-mint"></i>
             <span>Google Calendar</span>
           </span>
           <i data-lucide="external-link" class="w-4 h-4 text-gray-500"></i>
         </button>
 
-        <button onclick="downloadIcsFile()" class="w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-400/40 text-left flex items-center justify-between transition">
+        <button onclick="exportIcs()" class="w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-400/40 text-left flex items-center justify-between transition">
           <span class="flex items-center gap-2.5">
             <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
-            <span>Download Apple / Outlook (.ICS)</span>
+            <span>Download Apple / Outlook (.ics)</span>
           </span>
           <i data-lucide="download" class="w-4 h-4 text-gray-500"></i>
         </button>
@@ -597,120 +507,42 @@
     </div>
   </div>
 
-  <!-- 3. TIMER TARGET ADJUST MODAL -->
-  <div id="targetModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="relative w-full max-w-sm max-h-[90vh] overflow-y-auto bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-white/10 pb-3">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <i data-lucide="clock" class="w-4 h-4 text-emerald-400"></i>
-          <span>Countdown Clock Settings</span>
-        </h3>
-        <button onclick="closeModal('targetModal')" class="text-gray-400 hover:text-white">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <div class="space-y-3 text-xs">
-        <button onclick="setScreenshotTarget()" class="w-full py-2.5 px-3 rounded-lg bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-900/60 text-left">
-          <strong>Screenshot Preset:</strong> 38d 05h 25m 26s
-        </button>
-        <button onclick="setLiveFinalTarget()" class="w-full py-2.5 px-3 rounded-lg bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 text-left">
-          <strong>Real Nov 28 Final Target:</strong> Calculate from present day
-        </button>
-        <button onclick="setShortDemoTarget(120)" class="w-full py-2.5 px-3 rounded-lg bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 text-left">
-          <strong>Fast Demo:</strong> 2 Minutes Remaining
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Toast Notification Box -->
-  <div id="toastBox" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-[#0d1f17] border border-emerald-400/50 text-white px-4 py-3 rounded-xl shadow-2xl text-xs sm:text-sm">
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-28 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2.5 bg-[#0d1e16] border border-emerald-400/50 text-white px-4 py-3 rounded-xl shadow-2xl text-xs sm:text-sm">
     <i data-lucide="check" class="w-4 h-4 text-brand-mint"></i>
-    <span id="toastMsg">Action completed successfully!</span>
+    <span id="toastText">Success!</span>
   </div>
 
-  <!-- JAVASCRIPT: AUTORUN CLOCK & APP LOGIC -->
+  <!-- JAVASCRIPT: ACCURATE AUTORUN TIMER & LOGIC -->
   <script>
     // Initialize icons
     lucide.createIcons();
 
-    // Sound synthesizer with Web Audio API (No external sound files required)
-    let audioEnabled = false;
-    let audioCtx = null;
-
-    function getAudioContext() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      return audioCtx;
-    }
-
-    function toggleAudioFx() {
-      audioEnabled = !audioEnabled;
-      const icon = document.getElementById('audioIcon');
-      if (audioEnabled) {
-        getAudioContext();
-        icon.setAttribute('data-lucide', 'volume-2');
-        showToast('UI Audio effects enabled!');
-        playBeep(520, 0.12);
-      } else {
-        icon.setAttribute('data-lucide', 'volume-x');
-        showToast('UI Audio muted');
-      }
-      lucide.createIcons();
-    }
-
-    function playBeep(freq = 440, duration = 0.1) {
-      if (!audioEnabled) return;
-      try {
-        const ctx = getAudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + duration);
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-
     /* ----------------------------------------------------
-       PRECISE TIMEZONE & COUNTDOWN CALCULATION
-       Target: Saturday, November 28, 7:00 PM ET.
-       In standard time (late November), Eastern Time is EST = UTC-5.
-       7:00 PM EST (19:00 -05:00) is exactly 00:00:00 UTC on November 29.
+       PRECISE COUNTDOWN TIMER:
+       Saturday, November 28, 7:00 PM Eastern Time (EST: UTC-5)
+       7 PM EST = 00:00:00 UTC on Nov 29
     ---------------------------------------------------- */
-
-    function getTargetFinalDate() {
+    function resolveTargetDate() {
       const now = new Date();
       let targetYear = now.getUTCFullYear();
-      // Target in ISO format with explicit -05:00 Eastern Standard Time offset
+      // Use explicit ISO offset for Eastern Standard Time (-05:00)
       let target = new Date(`${targetYear}-11-28T19:00:00-05:00`);
 
-      // If the contest has already passed in the current year, target the upcoming year
       if (now.getTime() > target.getTime()) {
         target = new Date(`${targetYear + 1}-11-28T19:00:00-05:00`);
       }
       return target;
     }
 
-    let finalEventDate = getTargetFinalDate();
-    let countdownInterval = null;
+    const eventDate = resolveTargetDate();
+    let clockInterval = null;
 
-    function formatNumber(num) {
-      return num < 10 ? `0${num}` : `${num}`;
+    function format2Digits(val) {
+      return val < 10 ? `0${val}` : `${val}`;
     }
 
-    function updateLocalTimeDisplays() {
+    function initUserTimezoneDisplay() {
       try {
         const options = {
           weekday: 'short',
@@ -720,98 +552,60 @@
           minute: '2-digit',
           timeZoneName: 'short'
         };
-        const localFormatted = finalEventDate.toLocaleString(undefined, options);
+        const localStr = eventDate.toLocaleString(undefined, options);
 
-        const localDisplay = document.getElementById('userLocalTimeDisplay');
-        if (localDisplay) {
-          localDisplay.textContent = `Your Time: ${localFormatted}`;
-        }
+        const pill = document.getElementById('userLocalPill');
+        if (pill) pill.textContent = `Your Time: ${localStr}`;
 
-        const modalPreview = document.getElementById('modalLocalTimePreview');
-        if (modalPreview) {
-          modalPreview.textContent = localFormatted;
-        }
-      } catch (err) {
-        console.warn('Timezone resolution error:', err);
+        const modalPreview = document.getElementById('modalLocalPreview');
+        if (modalPreview) modalPreview.textContent = localStr;
+      } catch (e) {
+        console.warn('Timezone preview error:', e);
       }
     }
 
-    function calculateTimeRemaining() {
+    function updateCountdown() {
       const now = new Date().getTime();
-      const difference = finalEventDate.getTime() - now;
+      const diff = eventDate.getTime() - now;
 
-      if (difference <= 0) {
-        return { total: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+      if (diff <= 0) {
+        setUnitText('daysBox', '00');
+        setUnitText('hoursBox', '00');
+        setUnitText('minsBox', '00');
+        setUnitText('secsBox', '00');
+        if (clockInterval) clearInterval(clockInterval);
+        return;
       }
 
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((difference / 1000 / 60) % 60);
-      const seconds = Math.floor((difference / 1000) % 60);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / 1000 / 60) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
 
-      return { total: difference, days, hours, minutes, seconds };
+      setUnitText('daysBox', format2Digits(days));
+      setUnitText('hoursBox', format2Digits(hours));
+      setUnitText('minsBox', format2Digits(mins));
+      setUnitText('secsBox', format2Digits(secs));
     }
 
-    function updateCountdownDisplay() {
-      const t = calculateTimeRemaining();
-
-      const daysEl = document.getElementById('daysVal');
-      const hoursEl = document.getElementById('hoursVal');
-      const minsEl = document.getElementById('minsVal');
-      const secsEl = document.getElementById('secsVal');
-
-      if (!daysEl) return;
-
-      const newDays = formatNumber(t.days);
-      const newHours = formatNumber(t.hours);
-      const newMins = formatNumber(t.minutes);
-      const newSecs = formatNumber(t.seconds);
-
-      if (daysEl.textContent !== newDays) {
-        daysEl.textContent = newDays;
-        highlightTick(daysEl);
-      }
-
-      if (hoursEl.textContent !== newHours) {
-        hoursEl.textContent = newHours;
-        highlightTick(hoursEl);
-      }
-
-      if (minsEl.textContent !== newMins) {
-        minsEl.textContent = newMins;
-        highlightTick(minsEl);
-      }
-
-      if (secsEl.textContent !== newSecs) {
-        secsEl.textContent = newSecs;
-        highlightTick(secsEl);
-      }
-
-      // Check if finished
-      if (t.total <= 0 && countdownInterval) {
-        clearInterval(countdownInterval);
-        celebrateTrophyClick();
-        showToast('The Live Final stream is now streaming live!');
+    function setUnitText(id, newText) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.textContent !== newText) {
+        el.textContent = newText;
+        el.classList.add('pop');
+        setTimeout(() => el.classList.remove('pop'), 200);
       }
     }
 
-    function highlightTick(el) {
-      el.classList.add('tick');
-      setTimeout(() => {
-        el.classList.remove('tick');
-      }, 300);
+    function startTimer() {
+      initUserTimezoneDisplay();
+      updateCountdown();
+      if (clockInterval) clearInterval(clockInterval);
+      clockInterval = setInterval(updateCountdown, 1000);
     }
 
-    function startAutorun() {
-      if (countdownInterval) clearInterval(countdownInterval);
-      updateLocalTimeDisplays();
-      updateCountdownDisplay();
-      countdownInterval = setInterval(() => {
-        updateCountdownDisplay();
-      }, 1000);
-    }
-
-    // Modal helpers
+    // Modal Control
     function openModal(id) {
       document.getElementById(id).classList.remove('hidden');
     }
@@ -820,150 +614,100 @@
       document.getElementById(id).classList.add('hidden');
     }
 
-    function openEntryModal() {
-      openModal('entryModal');
-      playBeep(580, 0.1);
+    // Interactive Confetti
+    function triggerConfetti() {
+      confetti({
+        particleCount: 80,
+        spread: 75,
+        origin: { y: 0.5 },
+        colors: ['#34d399', '#5eead4', '#10b981', '#ffffff']
+      });
+      showToast('🏆 EzyStudio Build Cup: $10,000 Prize Pool');
     }
 
-    function openCalendarOptions() {
-      openModal('calendarModal');
-      playBeep(480, 0.1);
+    function handleRegistration(e) {
+      e.preventDefault();
+      closeModal('entryModal');
+      triggerConfetti();
+      showToast('🎉 You have registered for the contest!');
     }
 
-    function copyTargetTimestamp() {
-      const shareText = `EzyStudio Build Cup Live Final: Sat, Nov 28 at 7:00 PM ET (${finalEventDate.toLocaleString()}). Watch live at https://ezystudio.com/arena`;
-
-      const textArea = document.createElement("textarea");
-      textArea.value = shareText;
-      document.body.appendChild(textArea);
-      textArea.select();
+    function copyShareText() {
+      const txt = `Join the EzyStudio Build Cup! Live final: Sat, Nov 28 at 7:00 PM ET ($10,000 prizes). https://ezystudio.com/arena`;
+      const tempInput = document.createElement('textarea');
+      tempInput.value = txt;
+      document.body.appendChild(tempInput);
+      tempInput.select();
       try {
         document.execCommand('copy');
-        showToast('Event date and time copied to clipboard!');
+        showToast('Event link copied to clipboard!');
       } catch (err) {
         showToast('Unable to copy to clipboard.');
       }
-      document.body.removeChild(textArea);
+      document.body.removeChild(tempInput);
     }
 
-    // Interactive Entry Submission
-    function handleEntrySubmit(e) {
-      e.preventDefault();
-      closeModal('entryModal');
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#34d399', '#5eead4', '#10b981', '#ffffff']
-      });
-      playBeep(880, 0.3);
-      showToast('🎉 You are officially registered for the Build Cup!');
-    }
-
-    // Calendar Integration Logic with Precise UTC timestamps
-    function addGoogleCalendar() {
-      // 7 PM EST (UTC-5) on Nov 28 = 00:00:00 UTC on Nov 29
-      const year = finalEventDate.getUTCFullYear();
-      const startTime = `${year}1129T000000Z`;
-      const endTime = `${year}1129T030000Z`;
-
+    function openGoogleCalendar() {
+      const y = eventDate.getUTCFullYear();
+      const start = `${y}1129T000000Z`;
+      const end = `${y}1129T030000Z`;
       const title = encodeURIComponent("EzyStudio Build Cup - Live Final Stream ($10,000)");
-      const details = encodeURIComponent("Watch the top 10 finalists get judged live on stream by real business owners for $10,000 in prizes. Tune in live on EzyStudio Arena!");
-      const location = encodeURIComponent("https://ezystudio.com/arena/live");
-      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${startTime}/${endTime}`;
-
+      const details = encodeURIComponent("Top 10 finalists live judging on stream. $10,000 in prizes!");
+      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${start}/${end}`;
       window.open(url, '_blank');
       closeModal('calendarModal');
-      showToast('Opening Google Calendar...');
     }
 
-    function downloadIcsFile() {
-      const year = finalEventDate.getUTCFullYear();
-      const icsData = [
+    function exportIcs() {
+      const y = eventDate.getUTCFullYear();
+      const ics = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
         "PRODID:-//EzyStudio//BuildCup Season 1//EN",
-        "CALSCALE:GREGORIAN",
-        "METHOD:PUBLISH",
         "BEGIN:VEVENT",
-        `UID:ezystudio-buildcup-${year}@ezystudio.com`,
-        `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
-        `DTSTART:${year}1129T000000Z`,
-        `DTEND:${year}1129T030000Z`,
+        `UID:ezystudio-${Date.now()}@ezystudio.com`,
+        `DTSTART:${y}1129T000000Z`,
+        `DTEND:${y}1129T030000Z`,
         "SUMMARY:EzyStudio Build Cup Live Final ($10,000)",
-        "DESCRIPTION:Watch the top 10 finalists get judged live on stream by real business owners.",
-        "LOCATION:https://ezystudio.com/arena/live",
+        "DESCRIPTION:Watch top 10 finalists live on stream.",
         "STATUS:CONFIRMED",
         "END:VEVENT",
         "END:VCALENDAR"
       ].join("\r\n");
 
-      const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.setAttribute('download', 'EzyStudio-BuildCup-Nov28.ics');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = window.URL.createObjectURL(blob);
+      a.download = 'EzyStudio-Build-Cup-Nov28.ics';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
       closeModal('calendarModal');
-      showToast('Calendar .ics file downloaded!');
+      showToast('Calendar file (.ics) downloaded!');
     }
 
-    // Confetti celebration on trophy click
-    function celebrateTrophyClick() {
-      confetti({
-        particleCount: 75,
-        spread: 80,
-        origin: { x: 0.75, y: 0.4 },
-        colors: ['#2dd4bf', '#34d399', '#a7f3d0', '#fbbf24']
-      });
-      playBeep(700, 0.15);
-      showToast('🏆 Season 01 Grand Prize: $5,000 + Business Perks!');
-    }
-
-    function openRulesModal() {
-      showToast('Contest open to everyone worldwide building with EzyStudio.');
-    }
-
-    function openJudgesModal() {
-      showToast('Judging Panel: 4 verified SaaS founders & agency directors.');
-    }
-
-    function simulateStreamAlert() {
-      showToast('Stream link will be sent to registered builders before Nov 28.');
-    }
-
-    function toggleClockSettings() {
-      copyTargetTimestamp();
-    }
-
-    // Custom Toast popup helper
-    function showToast(message) {
-      const toast = document.getElementById('toastBox');
-      const msg = document.getElementById('toastMsg');
-      msg.textContent = message;
-      toast.classList.remove('translate-y-24', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      const txt = document.getElementById('toastText');
+      txt.textContent = msg;
+      t.classList.remove('translate-y-28', 'opacity-0');
+      t.classList.add('translate-y-0', 'opacity-100');
 
       setTimeout(() => {
-        toast.classList.add('translate-y-24', 'opacity-0');
-        toast.classList.remove('translate-y-0', 'opacity-100');
-      }, 3500);
+        t.classList.add('translate-y-28', 'opacity-0');
+        t.classList.remove('translate-y-0', 'opacity-100');
+      }, 3200);
     }
 
-    // Close modal on escape key
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeModal('entryModal');
         closeModal('calendarModal');
-        const targetModal = document.getElementById('targetModal');
-        if (targetModal) closeModal('targetModal');
       }
     });
 
-    // Start autorun immediately on load
     window.onload = function () {
-      startAutorun();
+      startTimer();
     };
   </script>
 </body>
