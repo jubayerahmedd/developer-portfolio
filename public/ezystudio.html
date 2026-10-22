@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EzyStudio Build Cup - Season 01</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            mono: ['"Space Grotesk"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              dark: '#070d0a',
+              card: '#0d1512',
+              cardHover: '#13201b',
+              border: 'rgba(52, 211, 153, 0.15)',
+              borderActive: 'rgba(52, 211, 153, 0.4)',
+              mint: '#5eead4',
+              accent: '#34d399',
+              emerald: '#10b981',
+              glow: '#2dd4bf',
+            }
+          },
+          boxShadow: {
+            'glow-sm': '0 0 15px -3px rgba(52, 211, 153, 0.3)',
+            'glow-btn': '0 4px 28px rgba(45, 212, 191, 0.4), 0 0 12px rgba(16, 185, 129, 0.25)',
+            'glow-card': '0 0 35px -10px rgba(16, 185, 129, 0.2)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Background Patterns & Ambient Glows */
+    body {
+      background-color: #060b08;
+      background-image:
+        radial-gradient(ellipse at 80% 25%, rgba(45, 212, 191, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 75%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 10%, rgba(52, 211, 153, 0.05) 0%, transparent 60%);
+      background-attachment: fixed;
+    }
+
+    /* Subtle dot grid overlay matching the design */
+    .bg-grid-dots {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Trophy floating animation */
+    @keyframes trophyFloat {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-9px) rotate(0.4deg);
+      }
+    }
+    .animate-float {
+      animation: trophyFloat 5s ease-in-out infinite;
+    }
+
+    /* Subtle pulse animation for glowing pedestals */
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.04); }
+    }
+    .animate-glow-pulse {
+      animation: glowPulse 4.5s ease-in-out infinite;
+    }
+
+    /* Shimmer effect for prize cards */
+    .card-gradient-border {
+      position: relative;
+      background: linear-gradient(135deg, rgba(20, 36, 28, 0.8), rgba(9, 18, 14, 0.95));
+      border: 1px solid rgba(52, 211, 153, 0.18);
+      backdrop-filter: blur(12px);
+    }
+    .card-gradient-border:hover {
+      border-color: rgba(94, 234, 212, 0.45);
+      box-shadow: 0 10px 30px -10px rgba(45, 212, 191, 0.2);
+    }
+
+    /* Gradient Prize Text */
+    .mint-gradient-text {
+      background: linear-gradient(180deg, #bbf7d0 0%, #6ee7b7 35%, #2dd4bf 75%, #0d9488 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Star Sparkle CSS */
+    .sparkle {
+      position: absolute;
+      background: #5eead4;
+      border-radius: 50%;
+      box-shadow: 0 0 8px 1px #5eead4;
+      animation: sparkleFade 3s ease-in-out infinite;
+    }
+    @keyframes sparkleFade {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    /* Flip clock number flash */
+    .number-tick {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .number-tick.tick {
+      transform: scale(1.12);
+      color: #5eead4;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #060b08;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #193327;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2dd4bf;
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen flex flex-col justify-between selection:bg-brand-mint selection:text-black relative overflow-x-hidden">
+
+  <!-- Ambient Background Spotlights & Angular Light Beams (matching the original artwork) -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <!-- Dot pattern -->
+    <div class="absolute inset-0 bg-grid-dots opacity-35"></div>
+
+    <!-- Angular top-center light beam projection -->
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[850px] h-[550px] opacity-15"
+         style="background: conic-gradient(from 180deg at 50% 0%, transparent 160deg, #34d399 180deg, transparent 200deg); filter: blur(55px);">
+    </div>
+
+    <!-- Right Side Trophy Backlight Halo -->
+    <div class="absolute top-20 right-8 md:right-32 w-[380px] h-[380px] bg-brand-glow/20 rounded-full blur-[110px] animate-glow-pulse"></div>
+    <div class="absolute bottom-16 left-12 w-[320px] h-[320px] bg-emerald-600/10 rounded-full blur-[90px]"></div>
+
+    <!-- Floating Star Sparkles -->
+    <div class="sparkle w-1.5 h-1.5 top-32 right-1/4 animate-delay-100"></div>
+    <div class="sparkle w-2 h-2 top-48 right-[18%] opacity-80 animate-delay-700" style="animation-duration: 4s;"></div>
+    <div class="sparkle w-1 h-1 top-72 right-[38%] opacity-60 animate-delay-300" style="animation-duration: 2.5s;"></div>
+    <div class="sparkle w-1.5 h-1.5 top-24 left-[14%] opacity-50" style="animation-duration: 3.5s;"></div>
+    <div class="sparkle w-2 h-2 top-96 right-[8%] opacity-70" style="animation-duration: 5s;"></div>
+  </div>
+
+  <!-- Header Navigation Bar -->
+  <nav class="relative z-20 w-full max-w-7xl mx-auto px-5 sm:px-8 py-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="/" class="flex items-center gap-3" aria-label="Back to jubayer.qa home">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-300 flex items-center justify-center font-bold text-black text-sm tracking-wider shadow-glow-sm">
+          ES
+        </div>
+        <span class="font-bold tracking-tight text-lg text-white">EzyStudio <span class="text-brand-mint text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/20 ml-1.5">Arena</span></span>
+      </a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button id="clockModeBtn" onclick="toggleClockSettings()" class="text-xs font-mono px-3 py-1.5 rounded-full bg-black/40 border border-emerald-500/20 hover:border-emerald-400/50 text-gray-300 hover:text-white transition flex items-center gap-1.5">
+        <i data-lucide="clock-3" class="w-3.5 h-3.5 text-brand-mint"></i>
+        <span>Live Sync: <span id="clockSyncStatus" class="text-brand-mint">Active</span></span>
+      </button>
+      <button onclick="toggleAudioFx()" id="audioBtn" title="Toggle UI Sound" class="p-2 rounded-full bg-black/40 border border-white/10 hover:border-emerald-400/40 text-gray-400 hover:text-white transition">
+        <i data-lucide="volume-2" id="audioIcon" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 pt-4 pb-16 flex-grow flex flex-col justify-center">
+
+    <!-- Hero Two-Column Grid: Left (Pitch & Actions) + Right (Trophy & Autorun Timer) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-14">
+
+      <!-- LEFT COLUMN: Contest Details -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- Eyebrow Badges (Exact match to screenshot) -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <span class="text-[11px] font-mono tracking-widest uppercase px-3 py-1 rounded border border-white/15 bg-white/5 text-gray-300 backdrop-blur-sm">
+            The EzyStudio Build Cup
+          </span>
+          <span class="text-[11px] font-mono tracking-widest uppercase px-3 py-1 rounded border border-emerald-500/25 bg-emerald-950/30 text-emerald-300 backdrop-blur-sm">
+            Season 01
+          </span>
+        </div>
+
+        <!-- Hero Headline with Large Gradient $10,000 -->
+        <div class="space-y-1">
+          <h1 class="text-3xl sm:text-5xl lg:text-[56px] font-extrabold tracking-tight text-white leading-tight">
+            Build it. Get judged live.
+          </h1>
+          <div class="flex items-baseline gap-3 flex-wrap pt-1">
+            <span class="text-3xl sm:text-5xl lg:text-[56px] font-bold text-white tracking-tight">Win</span>
+            <span class="mint-gradient-text text-5xl sm:text-7xl lg:text-[88px] font-black tracking-tight drop-shadow-sm select-none">
+              $10,000
+            </span>
+          </div>
+        </div>
+
+        <!-- Narrative Description -->
+        <p class="text-gray-400 text-base sm:text-lg max-w-xl leading-relaxed font-normal">
+          Our first build contest, open to everyone. Build a website or app on EzyStudio, rally the votes, and watch real business owners judge the top 10 live on stream.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="pt-2 flex flex-wrap items-center gap-4">
+          <!-- Primary CTA: Enter Free -->
+          <button onclick="openEntryModal()" class="group relative px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-white font-semibold text-sm sm:text-base flex items-center gap-2.5 shadow-glow-btn transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0">
+            <span>Enter free</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"></i>
+          </button>
+
+          <!-- Secondary CTA: Add to Calendar -->
+          <button onclick="openCalendarOptions()" class="px-5 py-3.5 rounded-xl border border-white/20 hover:border-emerald-400/50 bg-black/30 hover:bg-white/5 text-gray-200 hover:text-white font-medium text-sm sm:text-base flex items-center gap-2.5 transition backdrop-blur-sm">
+            <i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i>
+            <span>Add the final to my calendar</span>
+          </button>
+        </div>
+
+        <!-- Quick Stats Strip -->
+        <div class="pt-4 flex items-center gap-6 text-xs text-gray-400">
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+            <span>No purchase required</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="users" class="w-4 h-4 text-emerald-400"></i>
+            <span>1,420+ Builders registered</span>
+          </div>
+          <div class="hidden sm:flex items-center gap-1.5">
+            <i data-lucide="radio" class="w-4 h-4 text-red-400 animate-pulse"></i>
+            <span>Live judging stream</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Centered 3D Cup + Autorun Countdown -->
+      <div class="lg:col-span-5 flex flex-col items-center justify-center relative mt-6 lg:mt-0">
+
+        <!-- Trophy Graphic Centerpiece -->
+        <div class="relative w-full max-w-[340px] flex flex-col items-center">
+
+          <!-- Ambient Trophy Pedestal Glow -->
+          <div class="absolute bottom-12 w-48 h-12 bg-emerald-500/25 rounded-full blur-2xl"></div>
+
+          <!-- Illustrated Trophy SVG (Faithfully crafted to replicate image) -->
+          <div class="relative z-10 animate-float cursor-pointer" onclick="celebrateTrophyClick()" title="Click to celebrate!">
+            <svg class="w-64 sm:w-72 h-auto drop-shadow-[0_20px_35px_rgba(45,212,191,0.25)]" viewBox="0 0 320 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="cupRimGrad" x1="60" y1="20" x2="260" y2="20" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#4ade80"/>
+                  <stop offset="45%" stop-color="#86efac"/>
+                  <stop offset="100%" stop-color="#34d399"/>
+                </linearGradient>
+
+                <linearGradient id="cupBodyGrad" x1="160" y1="35" x2="160" y2="190" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#6ee7b7"/>
+                  <stop offset="35%" stop-color="#34d399"/>
+                  <stop offset="85%" stop-color="#14532d"/>
+                  <stop offset="100%" stop-color="#064e3b"/>
+                </linearGradient>
+
+                <linearGradient id="cupInnerShade" x1="90" y1="40" x2="230" y2="170" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#a7f3d0" stop-opacity="0.8"/>
+                  <stop offset="50%" stop-color="#2dd4bf" stop-opacity="0.1"/>
+                  <stop offset="100%" stop-color="#022c22" stop-opacity="0.8"/>
+                </linearGradient>
+
+                <linearGradient id="handleGradLeft" x1="20" y1="90" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#86efac"/>
+                  <stop offset="100%" stop-color="#2dd4bf"/>
+                </linearGradient>
+
+                <linearGradient id="handleGradRight" x1="230" y1="90" x2="300" y2="90" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#2dd4bf"/>
+                  <stop offset="100%" stop-color="#86efac"/>
+                </linearGradient>
+
+                <linearGradient id="stemGrad" x1="160" y1="180" x2="160" y2="230" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#34d399"/>
+                  <stop offset="60%" stop-color="#059669"/>
+                  <stop offset="100%" stop-color="#047857"/>
+                </linearGradient>
+
+                <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="8" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+              </defs>
+
+              <!-- Left Handle -->
+              <path d="M92 48C45 48 24 80 24 108C24 142 56 166 94 158"
+                    stroke="url(#handleGradLeft)" stroke-width="15" stroke-linecap="round" fill="none" opacity="0.95"/>
+              <path d="M92 48C48 48 34 78 34 108C34 135 60 152 92 148"
+                    stroke="#14532d" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.3"/>
+
+              <!-- Right Handle -->
+              <path d="M228 48C275 48 296 80 296 108C296 142 264 166 226 158"
+                    stroke="url(#handleGradRight)" stroke-width="15" stroke-linecap="round" fill="none" opacity="0.95"/>
+              <path d="M228 48C272 48 286 78 286 108C286 135 260 152 228 148"
+                    stroke="#14532d" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.3"/>
+
+              <!-- Main Trophy Bowl -->
+              <path d="M78 38C78 38 82 172 160 178C238 172 242 38 242 38L78 38Z"
+                    fill="url(#cupBodyGrad)"/>
+              <path d="M78 38C78 38 82 172 160 178C238 172 242 38 242 38L78 38Z"
+                    fill="url(#cupInnerShade)"/>
+
+              <!-- Top Rim Cap -->
+              <ellipse cx="160" cy="38" rx="82" ry="12" fill="url(#cupRimGrad)"/>
+              <ellipse cx="160" cy="36" rx="74" ry="8" fill="#134e4a" opacity="0.45"/>
+
+              <!-- Star Center Emblem (from reference) -->
+              <path d="M160 70L168.5 87.2L187.5 90L173.7 103.4L177 122.3L160 113.3L143 122.3L146.3 103.4L132.5 90L151.5 87.2L160 70Z"
+                    fill="#133e31" opacity="0.85"/>
+              <path d="M160 72L167.8 87.8L185.3 90.3L172.6 102.7L175.6 120L160 111.8L144.4 120L147.4 102.7L134.7 90.3L152.2 87.8L160 72Z"
+                    fill="#0a2a22" opacity="0.9"/>
+
+              <!-- Stem Neck -->
+              <path d="M140 176H180V208C180 216 194 224 204 226H116C126 224 140 216 140 208V176Z"
+                    fill="url(#stemGrad)"/>
+
+              <!-- Base Pedestal Foot -->
+              <ellipse cx="160" cy="228" rx="52" ry="10" fill="#2dd4bf" opacity="0.8"/>
+              <path d="M112 228C112 228 110 240 120 244C134 249 186 249 200 244C210 240 208 228 208 228H112Z"
+                    fill="#0f3d32"/>
+            </svg>
+          </div>
+
+          <!-- Pedestal Badge 'SEASON 1' directly beneath trophy -->
+        <div class="relative -mt-4 z-20">
+          <div class="px-5 py-2 rounded-lg bg-[#0e1915] border-2 border-[#1e3b2e] shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex items-center justify-center">
+            <span class="font-mono text-sm tracking-[0.25em] font-extrabold text-[#7bedc5] uppercase">
+              SEASON 1
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUTORUN LIVE COUNTDOWN COMPONENT -->
+      <div class="w-full max-w-sm mt-7 space-y-3">
+
+        <!-- Event Date Header -->
+        <div class="text-center space-y-1">
+          <p class="text-[11px] sm:text-xs font-mono tracking-widest text-gray-300 uppercase flex items-center justify-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>LIVE FINAL · SAT, NOV 28 · 7 PM ET</span>
+          </p>
+          <!-- Local Timezone Equivalent Pill -->
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/50 border border-emerald-500/20 text-[11px] text-emerald-300/90 font-mono">
+            <i data-lucide="globe" class="w-3 h-3 text-brand-mint"></i>
+            <span id="userLocalTimeDisplay">Your Time: Detecting...</span>
+          </div>
+        </div>
+
+        <!-- 4 Time Units Grid -->
+        <div class="grid grid-cols-4 gap-2.5 sm:gap-3">
+
+          <!-- DAYS -->
+          <div class="bg-black/45 border border-white/10 hover:border-emerald-500/30 rounded-xl py-3 px-2 flex flex-col items-center justify-center backdrop-blur-md transition">
+            <span id="daysVal" class="number-tick font-mono text-2xl sm:text-3xl font-bold text-white tracking-tight">--</span>
+            <span class="text-[10px] font-mono tracking-widest text-gray-400 uppercase mt-0.5">DAYS</span>
+          </div>
+
+          <!-- HOURS -->
+          <div class="bg-black/45 border border-white/10 hover:border-emerald-500/30 rounded-xl py-3 px-2 flex flex-col items-center justify-center backdrop-blur-md transition">
+            <span id="hoursVal" class="number-tick font-mono text-2xl sm:text-3xl font-bold text-white tracking-tight">--</span>
+            <span class="text-[10px] font-mono tracking-widest text-gray-400 uppercase mt-0.5">HRS</span>
+          </div>
+
+          <!-- MINUTES -->
+          <div class="bg-black/45 border border-white/10 hover:border-emerald-500/30 rounded-xl py-3 px-2 flex flex-col items-center justify-center backdrop-blur-md transition">
+            <span id="minsVal" class="number-tick font-mono text-2xl sm:text-3xl font-bold text-white tracking-tight">--</span>
+            <span class="text-[10px] font-mono tracking-widest text-gray-400 uppercase mt-0.5">MIN</span>
+          </div>
+
+          <!-- SECONDS (Autorunning Live) -->
+          <div class="bg-black/45 border border-emerald-500/30 shadow-[0_0_15px_rgba(52,211,153,0.15)] rounded-xl py-3 px-2 flex flex-col items-center justify-center backdrop-blur-md relative overflow-hidden">
+            <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-300"></div>
+            <span id="secsVal" class="number-tick font-mono text-2xl sm:text-3xl font-bold text-brand-mint tracking-tight">--</span>
+            <span class="text-[10px] font-mono tracking-widest text-emerald-400 uppercase mt-0.5">SEC</span>
+          </div>
+
+        </div>
+
+        <!-- Live ticking indicator bar -->
+        <div class="flex items-center justify-between text-[11px] text-gray-400 px-1 pt-1">
+          <span class="flex items-center gap-1.5 text-xs text-gray-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Sync: 7:00 PM EST (UTC-5)
+          </span>
+          <button onclick="copyTargetTimestamp()" class="hover:text-brand-mint underline underline-offset-4 decoration-emerald-500/40 text-xs flex items-center gap-1">
+            <i data-lucide="copy" class="w-3 h-3"></i>
+            <span>Share Time</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- PRIZE BREAKDOWN SECTION (3 Stat Cards matching screenshot) -->
+    <div class="space-y-4 pt-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+
+        <!-- 1ST PLACE CARD -->
+        <div class="card-gradient-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-emerald-400 tracking-wider mb-2">
+              <div class="flex items-center gap-2">
+                <i data-lucide="trophy" class="w-4 h-4 text-emerald-400"></i>
+                <span class="font-bold">1ST</span>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Grand Winner</span>
+            </div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-3">
+              $5,000
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-300 leading-snug">
+            A year of Business free and a homepage feature
+          </p>
+        </div>
+
+        <!-- 2ND PLACE CARD -->
+        <div class="card-gradient-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-gray-400 tracking-wider mb-2">
+              <div class="flex items-center gap-2">
+                <i data-lucide="medal" class="w-4 h-4 text-teal-400"></i>
+                <span class="font-bold text-gray-300">2ND</span>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20">Runner Up</span>
+            </div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-3">
+              $3,000
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-300 leading-snug">
+            Six months of Business free and an App Store feature
+          </p>
+        </div>
+
+        <!-- 3RD PLACE CARD -->
+        <div class="card-gradient-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-gray-400 tracking-wider mb-2">
+              <div class="flex items-center gap-2">
+                <i data-lucide="award" class="w-4 h-4 text-emerald-500"></i>
+                <span class="font-bold text-gray-300">3RD</span>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Finalist</span>
+            </div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-3">
+              $2,000
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-300 leading-snug">
+            Three months of Business free and an App Store feature
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Bottom Tagline (Exact wording from screenshot) -->
+      <div class="text-center pt-3">
+        <p class="text-xs sm:text-sm text-gray-400 font-normal flex items-center justify-center gap-1.5">
+          <i data-lucide="sparkles" class="w-4 h-4 text-brand-mint"></i>
+          <span>Season 1 of many. As EzyStudio grows, so does the prize.</span>
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 border-t border-white/10 bg-black/40 py-6 text-center text-xs text-gray-400">
+    <div class="max-w-7xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 EzyStudio Inc. All contest rights reserved.</p>
+      <div class="flex items-center gap-6">
+        <a href="#rules" onclick="openRulesModal()" class="hover:text-brand-mint transition">Contest Rules & FAQ</a>
+        <a href="#judges" onclick="openJudgesModal()" class="hover:text-brand-mint transition">Judging Panel</a>
+        <a href="#stream" onclick="simulateStreamAlert()" class="hover:text-brand-mint transition">Watch Stream Info</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= MODALS & OVERLAYS ================= -->
+
+  <!-- 1. ENTRY MODAL ("Enter Free") -->
+  <div id="entryModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div class="flex items-center gap-2">
+          <div class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white">Enter the Build Cup</h3>
+            <p class="text-xs text-gray-400">Free submission. Season 01 closes Nov 28.</p>
+          </div>
+        </div>
+        <button onclick="closeModal('entryModal')" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/5">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="buildEntryForm" onsubmit="handleEntrySubmit(event)" class="space-y-4 text-sm">
+        <div>
+          <label class="block text-gray-300 text-xs font-semibold mb-1">Your Full Name</label>
+          <input required type="text" placeholder="Sarah Connor" class="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 focus:border-emerald-400 focus:outline-none text-white">
+        </div>
+        <div>
+          <label class="block text-gray-300 text-xs font-semibold mb-1">Work / Project Email</label>
+          <input required type="email" placeholder="sarah@example.com" class="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 focus:border-emerald-400 focus:outline-none text-white">
+        </div>
+        <div>
+          <label class="block text-gray-300 text-xs font-semibold mb-1">EzyStudio Project URL or Name (Optional)</label>
+          <input type="text" placeholder="ezystudio.com/@my-project" class="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 focus:border-emerald-400 focus:outline-none text-white">
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold flex items-center justify-center gap-2 shadow-glow-sm transition">
+            <span>Claim Free Contest Ticket</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. CALENDAR OPTIONS MODAL -->
+  <div id="calendarModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="calendar" class="w-5 h-5 text-emerald-400"></i>
+          <span>Add to Calendar</span>
+        </h3>
+        <button onclick="closeModal('calendarModal')" class="text-gray-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-300">
+        Live Final Stream: <strong>Saturday, November 28 at 7:00 PM ET</strong>. Pick your calendar provider below:
+      </p>
+
+      <div class="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/20 text-xs text-emerald-300 font-mono flex items-center justify-between">
+        <span>In your timezone:</span>
+        <strong id="modalLocalTimePreview">--</strong>
+      </div>
+
+      <div class="grid grid-cols-1 gap-2.5 text-sm">
+        <button onclick="addGoogleCalendar()" class="w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-400/40 text-left flex items-center justify-between transition">
+          <span class="flex items-center gap-2.5">
+            <i data-lucide="globe" class="w-4 h-4 text-brand-mint"></i>
+            <span>Google Calendar</span>
+          </span>
+          <i data-lucide="external-link" class="w-4 h-4 text-gray-500"></i>
+        </button>
+
+        <button onclick="downloadIcsFile()" class="w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-400/40 text-left flex items-center justify-between transition">
+          <span class="flex items-center gap-2.5">
+            <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
+            <span>Download Apple / Outlook (.ICS)</span>
+          </span>
+          <i data-lucide="download" class="w-4 h-4 text-gray-500"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. TIMER TARGET ADJUST MODAL -->
+  <div id="targetModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-sm bg-[#0e1713] border border-emerald-500/30 rounded-2xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="clock" class="w-4 h-4 text-emerald-400"></i>
+          <span>Countdown Clock Settings</span>
+        </h3>
+        <button onclick="closeModal('targetModal')" class="text-gray-400 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <button onclick="setScreenshotTarget()" class="w-full py-2.5 px-3 rounded-lg bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-900/60 text-left">
+          <strong>Screenshot Preset:</strong> 38d 05h 25m 26s
+        </button>
+        <button onclick="setLiveFinalTarget()" class="w-full py-2.5 px-3 rounded-lg bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 text-left">
+          <strong>Real Nov 28 Final Target:</strong> Calculate from present day
+        </button>
+        <button onclick="setShortDemoTarget(120)" class="w-full py-2.5 px-3 rounded-lg bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 text-left">
+          <strong>Fast Demo:</strong> 2 Minutes Remaining
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-[#0d1f17] border border-emerald-400/50 text-white px-4 py-3 rounded-xl shadow-2xl text-xs sm:text-sm">
+    <i data-lucide="check" class="w-4 h-4 text-brand-mint"></i>
+    <span id="toastMsg">Action completed successfully!</span>
+  </div>
+
+  <!-- JAVASCRIPT: AUTORUN CLOCK & APP LOGIC -->
+  <script>
+    // Initialize icons
+    lucide.createIcons();
+
+    // Sound synthesizer with Web Audio API (No external sound files required)
+    let audioEnabled = false;
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function toggleAudioFx() {
+      audioEnabled = !audioEnabled;
+      const icon = document.getElementById('audioIcon');
+      if (audioEnabled) {
+        getAudioContext();
+        icon.setAttribute('data-lucide', 'volume-2');
+        showToast('UI Audio effects enabled!');
+        playBeep(520, 0.12);
+      } else {
+        icon.setAttribute('data-lucide', 'volume-x');
+        showToast('UI Audio muted');
+      }
+      lucide.createIcons();
+    }
+
+    function playBeep(freq = 440, duration = 0.1) {
+      if (!audioEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    /* ----------------------------------------------------
+       PRECISE TIMEZONE & COUNTDOWN CALCULATION
+       Target: Saturday, November 28, 7:00 PM ET.
+       In standard time (late November), Eastern Time is EST = UTC-5.
+       7:00 PM EST (19:00 -05:00) is exactly 00:00:00 UTC on November 29.
+    ---------------------------------------------------- */
+
+    function getTargetFinalDate() {
+      const now = new Date();
+      let targetYear = now.getUTCFullYear();
+      // Target in ISO format with explicit -05:00 Eastern Standard Time offset
+      let target = new Date(`${targetYear}-11-28T19:00:00-05:00`);
+
+      // If the contest has already passed in the current year, target the upcoming year
+      if (now.getTime() > target.getTime()) {
+        target = new Date(`${targetYear + 1}-11-28T19:00:00-05:00`);
+      }
+      return target;
+    }
+
+    let finalEventDate = getTargetFinalDate();
+    let countdownInterval = null;
+
+    function formatNumber(num) {
+      return num < 10 ? `0${num}` : `${num}`;
+    }
+
+    function updateLocalTimeDisplays() {
+      try {
+        const options = {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          timeZoneName: 'short'
+        };
+        const localFormatted = finalEventDate.toLocaleString(undefined, options);
+
+        const localDisplay = document.getElementById('userLocalTimeDisplay');
+        if (localDisplay) {
+          localDisplay.textContent = `Your Time: ${localFormatted}`;
+        }
+
+        const modalPreview = document.getElementById('modalLocalTimePreview');
+        if (modalPreview) {
+          modalPreview.textContent = localFormatted;
+        }
+      } catch (err) {
+        console.warn('Timezone resolution error:', err);
+      }
+    }
+
+    function calculateTimeRemaining() {
+      const now = new Date().getTime();
+      const difference = finalEventDate.getTime() - now;
+
+      if (difference <= 0) {
+        return { total: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((difference / 1000 / 60) % 60);
+      const seconds = Math.floor((difference / 1000) % 60);
+
+      return { total: difference, days, hours, minutes, seconds };
+    }
+
+    function updateCountdownDisplay() {
+      const t = calculateTimeRemaining();
+
+      const daysEl = document.getElementById('daysVal');
+      const hoursEl = document.getElementById('hoursVal');
+      const minsEl = document.getElementById('minsVal');
+      const secsEl = document.getElementById('secsVal');
+
+      if (!daysEl) return;
+
+      const newDays = formatNumber(t.days);
+      const newHours = formatNumber(t.hours);
+      const newMins = formatNumber(t.minutes);
+      const newSecs = formatNumber(t.seconds);
+
+      if (daysEl.textContent !== newDays) {
+        daysEl.textContent = newDays;
+        highlightTick(daysEl);
+      }
+
+      if (hoursEl.textContent !== newHours) {
+        hoursEl.textContent = newHours;
+        highlightTick(hoursEl);
+      }
+
+      if (minsEl.textContent !== newMins) {
+        minsEl.textContent = newMins;
+        highlightTick(minsEl);
+      }
+
+      if (secsEl.textContent !== newSecs) {
+        secsEl.textContent = newSecs;
+        highlightTick(secsEl);
+      }
+
+      // Check if finished
+      if (t.total <= 0 && countdownInterval) {
+        clearInterval(countdownInterval);
+        celebrateTrophyClick();
+        showToast('The Live Final stream is now streaming live!');
+      }
+    }
+
+    function highlightTick(el) {
+      el.classList.add('tick');
+      setTimeout(() => {
+        el.classList.remove('tick');
+      }, 300);
+    }
+
+    function startAutorun() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      updateLocalTimeDisplays();
+      updateCountdownDisplay();
+      countdownInterval = setInterval(() => {
+        updateCountdownDisplay();
+      }, 1000);
+    }
+
+    // Modal helpers
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function openEntryModal() {
+      openModal('entryModal');
+      playBeep(580, 0.1);
+    }
+
+    function openCalendarOptions() {
+      openModal('calendarModal');
+      playBeep(480, 0.1);
+    }
+
+    function copyTargetTimestamp() {
+      const shareText = `EzyStudio Build Cup Live Final: Sat, Nov 28 at 7:00 PM ET (${finalEventDate.toLocaleString()}). Watch live at https://ezystudio.com/arena`;
+
+      const textArea = document.createElement("textarea");
+      textArea.value = shareText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast('Event date and time copied to clipboard!');
+      } catch (err) {
+        showToast('Unable to copy to clipboard.');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    // Interactive Entry Submission
+    function handleEntrySubmit(e) {
+      e.preventDefault();
+      closeModal('entryModal');
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#34d399', '#5eead4', '#10b981', '#ffffff']
+      });
+      playBeep(880, 0.3);
+      showToast('🎉 You are officially registered for the Build Cup!');
+    }
+
+    // Calendar Integration Logic with Precise UTC timestamps
+    function addGoogleCalendar() {
+      // 7 PM EST (UTC-5) on Nov 28 = 00:00:00 UTC on Nov 29
+      const year = finalEventDate.getUTCFullYear();
+      const startTime = `${year}1129T000000Z`;
+      const endTime = `${year}1129T030000Z`;
+
+      const title = encodeURIComponent("EzyStudio Build Cup - Live Final Stream ($10,000)");
+      const details = encodeURIComponent("Watch the top 10 finalists get judged live on stream by real business owners for $10,000 in prizes. Tune in live on EzyStudio Arena!");
+      const location = encodeURIComponent("https://ezystudio.com/arena/live");
+      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${startTime}/${endTime}`;
+
+      window.open(url, '_blank');
+      closeModal('calendarModal');
+      showToast('Opening Google Calendar...');
+    }
+
+    function downloadIcsFile() {
+      const year = finalEventDate.getUTCFullYear();
+      const icsData = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//EzyStudio//BuildCup Season 1//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        `UID:ezystudio-buildcup-${year}@ezystudio.com`,
+        `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
+        `DTSTART:${year}1129T000000Z`,
+        `DTEND:${year}1129T030000Z`,
+        "SUMMARY:EzyStudio Build Cup Live Final ($10,000)",
+        "DESCRIPTION:Watch the top 10 finalists get judged live on stream by real business owners.",
+        "LOCATION:https://ezystudio.com/arena/live",
+        "STATUS:CONFIRMED",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ].join("\r\n");
+
+      const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute('download', 'EzyStudio-BuildCup-Nov28.ics');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      closeModal('calendarModal');
+      showToast('Calendar .ics file downloaded!');
+    }
+
+    // Confetti celebration on trophy click
+    function celebrateTrophyClick() {
+      confetti({
+        particleCount: 75,
+        spread: 80,
+        origin: { x: 0.75, y: 0.4 },
+        colors: ['#2dd4bf', '#34d399', '#a7f3d0', '#fbbf24']
+      });
+      playBeep(700, 0.15);
+      showToast('🏆 Season 01 Grand Prize: $5,000 + Business Perks!');
+    }
+
+    function openRulesModal() {
+      showToast('Contest open to everyone worldwide building with EzyStudio.');
+    }
+
+    function openJudgesModal() {
+      showToast('Judging Panel: 4 verified SaaS founders & agency directors.');
+    }
+
+    function simulateStreamAlert() {
+      showToast('Stream link will be sent to registered builders before Nov 28.');
+    }
+
+    function toggleClockSettings() {
+      copyTargetTimestamp();
+    }
+
+    // Custom Toast popup helper
+    function showToast(message) {
+      const toast = document.getElementById('toastBox');
+      const msg = document.getElementById('toastMsg');
+      msg.textContent = message;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3500);
+    }
+
+    // Close modal on escape key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal('entryModal');
+        closeModal('calendarModal');
+        const targetModal = document.getElementById('targetModal');
+        if (targetModal) closeModal('targetModal');
+      }
+    });
+
+    // Start autorun immediately on load
+    window.onload = function () {
+      startAutorun();
+    };
+  </script>
+</body>
+</html>

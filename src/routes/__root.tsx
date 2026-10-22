@@ -78,6 +78,12 @@ function RootComponent() {
               <a href="/">Home</a>
               <Link to="/blog">Blog</Link>
               {/*
+                Plain <a>, NOT <Link>: `/ezystudio` is a raw server-route
+                response (like `/`), not a route this app's component tree
+                renders — a client-side navigation here would show nothing.
+              */}
+              <a href="/ezystudio">EzyStudio</a>
+              {/*
                 Plain <a>, NOT <Link>: `/feeds` is served by the platform App on
                 this same hostname, not by this template. Routing it through the
                 client router would 404 inside this app instead of leaving it.
